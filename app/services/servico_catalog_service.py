@@ -270,5 +270,101 @@ class ServicoCatalogService:
     async def compute_all_embeddings(self, db: AsyncSession) -> int:
         return await embedding_sync_service.compute_all_missing(db)
 
+    # ─── Composição por Cópia ─────────────────────────────────────────────────
+
+    async def clonar_composicao(
+        self,
+        servico_origem_id: UUID,
+        cliente_id: UUID,
+        codigo_clone: str,
+        descricao: str | None,
+        db: AsyncSession,
+    ) -> ExplodeComposicaoResponse:
+        """
+        Clone a servico_tcpo (with its composicao_tcpo children) into a new
+        independent PROPRIA item bound to cliente_id.
+
+        Children are NOT cloned — only the link records are copied so the new
+        item references the same insumos as the original.
+        The clone starts with origem=PROPRIA and status_homologacao=PENDENTE.
+        """
+        repo = ServicoTcpoRepository(db)
+        original = await repo.get_with_composicao(servico_origem_id)
+        if not original:
+            raise NotFoundError("ServicoTcpo", str(servico_origem_id))
+
+        novo = ServicoTcpo(
+            id=uuid.uuid4(),
+            cliente_id=cliente_id,
+            codigo_origem=codigo_clone,
+            descricao=descricao if descricao is not None else original.descricao,
+            unidade_medida=original.unidade_medida,
+            custo_unitario=original.custo_unitario,
+            categoria_id=original.categoria_id,
+            origem=OrigemItem.PROPRIA,
+            status_homologacao=StatusHomologacao.PENDENTE,
+        )
+        db.add(novo)
+        await db.flush()
+
+        for comp in original.composicoes_pai:
+            db.add(
+                ComposicaoTcpo(
+                    id=uuid.uuid4(),
+                    servico_pai_id=novo.id,
+                    insumo_filho_id=comp.insumo_filho_id,
+                    quantidade_consumo=comp.quantidade_consumo,
+                )
+            )
+
+        await db.flush()
+        logger.info(
+            "composicao_clonada",
+            origem_id=str(servico_origem_id),
+            clone_id=str(novo.id),
+            cliente_id=str(cliente_id),
+        )
+        return await self.explode_composicao(novo.id, db)
+
+    async def remover_componente(
+        self,
+        pai_id: UUID,
+        componente_id: UUID,
+        db: AsyncSession,
+    ) -> None:
+        """
+        Remove a ComposicaoTcpo link record from a PROPRIA service.
+        Raises NotFoundError if the link does not belong to this pai.
+        Raises ValidationError if pai is not PROPRIA (prevents mutating TCPO catalog).
+        """
+        from sqlalchemy import select as sa_select
+
+        repo = ServicoTcpoRepository(db)
+        pai = await repo.get_active_by_id(pai_id)
+        if not pai:
+            raise NotFoundError("ServicoTcpo", str(pai_id))
+        if pai.origem != OrigemItem.PROPRIA:
+            raise ValidationError(
+                "Apenas itens de origem PROPRIA podem ter componentes removidos."
+            )
+
+        result = await db.execute(
+            sa_select(ComposicaoTcpo).where(
+                ComposicaoTcpo.id == componente_id,
+                ComposicaoTcpo.servico_pai_id == pai_id,
+            )
+        )
+        comp = result.scalar_one_or_none()
+        if not comp:
+            raise NotFoundError("ComposicaoTcpo", str(componente_id))
+
+        await db.delete(comp)
+        await db.flush()
+        logger.info(
+            "componente_removido",
+            pai_id=str(pai_id),
+            componente_id=str(componente_id),
+        )
+
 
 servico_catalog_service = ServicoCatalogService()
