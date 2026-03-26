@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "FastAPI Dev",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"],
+      "port": 8000
+    },
+    {
+      "name": "Docker PostgreSQL",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "db"],
+      "port": 5432
+    }
+  ]
+}
