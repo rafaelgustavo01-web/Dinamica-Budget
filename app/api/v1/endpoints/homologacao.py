@@ -3,8 +3,12 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import get_current_active_user, get_db
-from app.models.usuario import UsuarioPerfil
+from app.core.dependencies import (
+    get_current_active_user,
+    get_db,
+    require_cliente_access,
+    require_cliente_perfil,
+)
 from app.schemas.common import PaginatedResponse
 from app.schemas.homologacao import (
     AprovarHomologacaoRequest,
@@ -17,18 +21,7 @@ from app.services.homologacao_service import homologacao_service
 
 router = APIRouter(prefix="/homologacao", tags=["homologacao"])
 
-
-async def _get_perfis(current_user, db: AsyncSession) -> list[str]:
-    """Extract the current user's perfis from the RBAC table."""
-    from sqlalchemy import select
-
-    result = await db.execute(
-        select(UsuarioPerfil.perfil).where(UsuarioPerfil.usuario_id == current_user.id)
-    )
-    perfis = [row[0] for row in result.fetchall()]
-    if current_user.is_admin:
-        perfis.append("ADMIN")
-    return perfis
+_PERFIS_APROVADORES = ["APROVADOR", "ADMIN"]
 
 
 @router.get("/pendentes", response_model=PaginatedResponse[ItemPendenteResponse])
@@ -39,6 +32,7 @@ async def listar_pendentes(
     current_user=Depends(get_current_active_user),
     db: AsyncSession = Depends(get_db),
 ) -> PaginatedResponse[ItemPendenteResponse]:
+    await require_cliente_perfil(cliente_id, _PERFIS_APROVADORES, current_user, db)
     return await homologacao_service.listar_pendentes(
         cliente_id=cliente_id,
         page=page,
@@ -53,12 +47,12 @@ async def aprovar_item(
     current_user=Depends(get_current_active_user),
     db: AsyncSession = Depends(get_db),
 ) -> AprovarHomologacaoResponse:
-    perfis = await _get_perfis(current_user, db)
+    # Validate the item's client before approving — service will also check
+    await require_cliente_perfil(request.cliente_id, _PERFIS_APROVADORES, current_user, db)
     return await homologacao_service.aprovar(
         request=request,
-        aprovador_email=current_user.email,
         aprovador_id=current_user.id,
-        aprovador_perfis=perfis,
+        aprovador_email=current_user.email,
         db=db,
     )
 
@@ -69,5 +63,10 @@ async def criar_item_proprio(
     current_user=Depends(get_current_active_user),
     db: AsyncSession = Depends(get_db),
 ) -> ServicoTcpoResponse:
-    servico = await homologacao_service.criar_item_proprio(request, db)
+    await require_cliente_access(request.cliente_id, current_user, db)
+    servico = await homologacao_service.criar_item_proprio(
+        request=request,
+        criado_por_id=current_user.id,
+        db=db,
+    )
     return ServicoTcpoResponse.model_validate(servico)

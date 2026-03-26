@@ -17,14 +17,14 @@ class HistoricoRepository(BaseRepository[HistoricoBuscaCliente]):
     async def create_registro(
         self,
         cliente_id: UUID,
+        usuario_id: UUID,
         texto_busca: str,
-        usuario_origem: str,
     ) -> HistoricoBuscaCliente:
         registro = HistoricoBuscaCliente(
             id=uuid.uuid4(),
             cliente_id=cliente_id,
+            usuario_id=usuario_id,
             texto_busca=texto_busca,
-            usuario_origem=usuario_origem,
         )
         self.db.add(registro)
         await self.db.flush()
@@ -34,5 +34,17 @@ class HistoricoRepository(BaseRepository[HistoricoBuscaCliente]):
     async def get_by_id(self, id: UUID) -> HistoricoBuscaCliente | None:  # type: ignore[override]
         result = await self.db.execute(
             select(HistoricoBuscaCliente).where(HistoricoBuscaCliente.id == id)
+        )
+        return result.scalar_one_or_none()
+
+    async def get_by_id_and_cliente(
+        self, id: UUID, cliente_id: UUID
+    ) -> HistoricoBuscaCliente | None:
+        """Fetch historico validating it belongs to the given client."""
+        result = await self.db.execute(
+            select(HistoricoBuscaCliente).where(
+                HistoricoBuscaCliente.id == id,
+                HistoricoBuscaCliente.cliente_id == cliente_id,
+            )
         )
         return result.scalar_one_or_none()

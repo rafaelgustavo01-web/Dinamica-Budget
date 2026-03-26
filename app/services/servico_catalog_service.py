@@ -34,10 +34,16 @@ class ServicoCatalogService:
         self,
         params: ServicoListParams,
         db: AsyncSession,
+        cliente_id: UUID | None = None,
     ) -> PaginatedResponse[ServicoTcpoResponse]:
+        """
+        Returns visible catalog: global TCPO approved + client's PROPRIA approved.
+        When cliente_id is provided, scopes to that client's visibility.
+        """
         repo = ServicoTcpoRepository(db)
         offset = (params.page - 1) * params.page_size
-        items, total = await repo.list_paginated(
+        items, total = await repo.list_catalogo_visivel(
+            cliente_id=cliente_id,
             q=params.q,
             categoria_id=params.categoria_id,
             offset=offset,

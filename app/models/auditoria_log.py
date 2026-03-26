@@ -1,18 +1,20 @@
 """
 Audit log table — records all write operations on sensitive fields.
-Populated via SQLAlchemy event listeners (hooks), not manually.
+Populated explicitly in services (not via SQLAlchemy hooks).
 
 Captures:
   - Price changes on servico_tcpo.custo_unitario
-  - Status changes on servico_tcpo.status_homologacao
-  - Any explicit CREATE/DELETE on servico_tcpo
+  - Status changes on servico_tcpo.status_homologacao (approval/rejection)
+  - Soft deletes on servico_tcpo
+  - Creation of item próprio
+  - Creation/strengthening of associacao_inteligente
 """
 
 import uuid
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import DateTime, Enum as SAEnum, String, Text, func
+from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import JSONB, UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -37,7 +39,14 @@ class AuditoriaLog(Base):
     campo_alterado: Mapped[str | None] = mapped_column(String(100), nullable=True)
     dados_anteriores: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     dados_novos: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-    usuario_origem: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    usuario_id: Mapped[UUID | None] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("usuarios.id", ondelete="SET NULL"),
+        nullable=True, index=True
+    )
+    cliente_id: Mapped[UUID | None] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("clientes.id", ondelete="SET NULL"),
+        nullable=True, index=True
+    )
     criado_em: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False, index=True
     )

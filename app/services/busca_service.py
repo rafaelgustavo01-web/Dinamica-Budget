@@ -12,23 +12,20 @@ Fluxo:
 Normalização obrigatória em todas as fases:
   strip → lowercase → remoção de acentos → collapse whitespace
 
-Histórico gravado via BackgroundTask (não bloqueia response).
+Histórico gravado de forma síncrona antes de retornar a resposta.
+O id real do histórico é incluído nos metadados da resposta.
 """
 
 import time
-import uuid
 from decimal import Decimal
 from uuid import UUID
 
-from fastapi import BackgroundTasks
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import NotFoundError
+from app.core.exceptions import NotFoundError, ValidationError
 from app.core.logging import get_logger
 from app.ml.embedder import embedder
 from app.ml.vector_search import vector_searcher
-from app.models.associacao_inteligente import CONSOLIDACAO_THRESHOLD
 from app.models.enums import OrigemAssociacao, OrigemItem, StatusHomologacao, StatusValidacaoAssociacao
 from app.repositories.associacao_repository import AssociacaoRepository, normalize_text
 from app.repositories.historico_repository import HistoricoRepository
@@ -49,9 +46,8 @@ class BuscaService:
     async def buscar(
         self,
         request: BuscaServicoRequest,
-        usuario_email: str,
+        usuario_id: UUID,
         db: AsyncSession,
-        background_tasks: BackgroundTasks,
     ) -> BuscaServicoResponse:
         t0 = time.monotonic()
 
@@ -63,7 +59,6 @@ class BuscaService:
 
         # ─────────────────────────────────────────────────────────────────────
         # FASE 0: Itens Próprios do Cliente (PROPRIA + APROVADO)
-        # Prioriza o portfólio homologado do cliente antes do catálogo global
         # ─────────────────────────────────────────────────────────────────────
         resultado = await self._fase0_itens_proprios(
             cliente_id=request.cliente_id,
@@ -78,8 +73,7 @@ class BuscaService:
                 resultados=resultado,
                 t0=t0,
                 cliente_id=request.cliente_id,
-                usuario_email=usuario_email,
-                background_tasks=background_tasks,
+                usuario_id=usuario_id,
                 db=db,
             )
 
@@ -93,7 +87,6 @@ class BuscaService:
             servico_repo=servico_repo,
         )
         if resultado:
-            # Fortalecer associação usada (async — dentro da mesma sessão)
             if associacao:
                 await assoc_repo.fortalecer(associacao)
             return await self._build_response(
@@ -101,8 +94,7 @@ class BuscaService:
                 resultados=resultado,
                 t0=t0,
                 cliente_id=request.cliente_id,
-                usuario_email=usuario_email,
-                background_tasks=background_tasks,
+                usuario_id=usuario_id,
                 db=db,
             )
 
@@ -121,8 +113,7 @@ class BuscaService:
                 resultados=resultado,
                 t0=t0,
                 cliente_id=request.cliente_id,
-                usuario_email=usuario_email,
-                background_tasks=background_tasks,
+                usuario_id=usuario_id,
                 db=db,
             )
 
@@ -142,8 +133,7 @@ class BuscaService:
             resultados=resultado,
             t0=t0,
             cliente_id=request.cliente_id,
-            usuario_email=usuario_email,
-            background_tasks=background_tasks,
+            usuario_id=usuario_id,
             db=db,
         )
 
@@ -204,15 +194,15 @@ class BuscaService:
         if not servico:
             return None, None
 
-        # Only auto-return immediately for CONSOLIDADA associations
-        if assoc.status_validacao != StatusValidacaoAssociacao.CONSOLIDADA:
+        # Only circuit-break immediately for CONSOLIDADA; return for all matches
+        if assoc.status_validacao == StatusValidacaoAssociacao.CONSOLIDADA:
+            logger.info("fase1_consolidada_circuit_break", servico_id=str(servico.id))
+        else:
             logger.info(
-                "fase1_associacao_validada",
+                "fase1_associacao_hit",
                 status=assoc.status_validacao,
                 freq=assoc.frequencia_uso,
             )
-        else:
-            logger.info("fase1_consolidada_circuit_break", servico_id=str(servico.id))
 
         return [
             ResultadoBusca(
@@ -291,7 +281,6 @@ class BuscaService:
             servico = await servico_repo.get_active_by_id(servico_id)
             if not servico:
                 continue
-            # Only return approved items
             if servico.status_homologacao != StatusHomologacao.APROVADO:
                 continue
             results.append(
@@ -319,32 +308,25 @@ class BuscaService:
         resultados: list[ResultadoBusca],
         t0: float,
         cliente_id: UUID,
-        usuario_email: str,
-        background_tasks: BackgroundTasks,
+        usuario_id: UUID,
         db: AsyncSession,
     ) -> BuscaServicoResponse:
         elapsed = int((time.monotonic() - t0) * 1000)
-        historico_id = str(uuid.uuid4())
 
-        async def _gravar():
-            from app.core.database import get_db_session
-
-            async for session in get_db_session():
-                repo = HistoricoRepository(session)
-                await repo.create_registro(
-                    cliente_id=cliente_id,
-                    texto_busca=texto_busca,
-                    usuario_origem=usuario_email,
-                )
-
-        background_tasks.add_task(_gravar)
+        # Persist historico synchronously — real id returned in response
+        historico_repo = HistoricoRepository(db)
+        historico = await historico_repo.create_registro(
+            cliente_id=cliente_id,
+            usuario_id=usuario_id,
+            texto_busca=texto_busca,
+        )
 
         return BuscaServicoResponse(
             texto_buscado=texto_busca,
             resultados=resultados,
             metadados={
                 "tempo_processamento_ms": elapsed,
-                "id_historico_busca": historico_id,
+                "id_historico_busca": str(historico.id),
             },
         )
 
@@ -353,17 +335,39 @@ class BuscaService:
     async def criar_associacao(
         self,
         request: CriarAssociacaoRequest,
-        usuario_email: str,
+        usuario_id: UUID,
         db: AsyncSession,
     ) -> AssociacaoResponse:
         servico_repo = ServicoTcpoRepository(db)
         assoc_repo = AssociacaoRepository(db)
+        historico_repo = HistoricoRepository(db)
 
+        # Validate historico exists and belongs to the same client
+        historico = await historico_repo.get_by_id_and_cliente(
+            id=request.id_historico_busca,
+            cliente_id=request.cliente_id,
+        )
+        if not historico:
+            raise ValidationError(
+                "Histórico de busca não encontrado ou não pertence ao cliente informado."
+            )
+
+        # Validate the selected service is visible to this client
         servico = await servico_repo.get_active_by_id(request.id_tcpo_selecionado)
         if not servico:
             raise NotFoundError("ServicoTcpo", str(request.id_tcpo_selecionado))
 
-        # Sanitize before upsert
+        # Visible = global TCPO approved OR client's own PROPRIA approved
+        is_global_tcpo = servico.cliente_id is None and servico.status_homologacao == StatusHomologacao.APROVADO
+        is_own_propria = (
+            servico.cliente_id == request.cliente_id
+            and servico.status_homologacao == StatusHomologacao.APROVADO
+        )
+        if not (is_global_tcpo or is_own_propria):
+            raise ValidationError(
+                "Serviço não está disponível para este cliente."
+            )
+
         associacao = await assoc_repo.upsert_associacao(
             cliente_id=request.cliente_id,
             texto_busca_original=request.texto_busca_original,
@@ -377,6 +381,7 @@ class BuscaService:
             id=str(associacao.id),
             freq=associacao.frequencia_uso,
             status=associacao.status_validacao,
+            usuario_id=str(usuario_id),
         )
 
         return AssociacaoResponse(

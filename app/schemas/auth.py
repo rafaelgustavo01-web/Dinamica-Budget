@@ -32,3 +32,17 @@ class UsuarioResponse(BaseModel):
     is_admin: bool
 
     model_config = {"from_attributes": True}
+
+
+class PerfilClienteResponse(BaseModel):
+    cliente_id: str
+    perfil: str
+
+
+class MeResponse(BaseModel):
+    id: str
+    nome: str
+    email: str
+    is_active: bool
+    is_admin: bool
+    perfis: list[PerfilClienteResponse]

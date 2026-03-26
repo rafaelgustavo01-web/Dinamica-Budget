@@ -151,6 +151,54 @@ class ServicoTcpoRepository(BaseRepository[ServicoTcpo]):
         )
         return list(items_result.scalars().all()), total
 
+    async def list_catalogo_visivel(
+        self,
+        cliente_id: UUID | None,
+        q: str | None,
+        categoria_id: int | None,
+        offset: int,
+        limit: int,
+    ) -> tuple[list[ServicoTcpo], int]:
+        """
+        Returns the visible catalog for a given client:
+          - Global TCPO items (cliente_id IS NULL, status = APROVADO)
+          - Client's own PROPRIA items (cliente_id = :id, status = APROVADO)
+        If cliente_id is None (admin scenario), returns all approved active items.
+        """
+        from sqlalchemy import or_
+
+        base_filter = [
+            ServicoTcpo.deleted_at.is_(None),
+            ServicoTcpo.status_homologacao == StatusHomologacao.APROVADO,
+        ]
+
+        if cliente_id is not None:
+            base_filter.append(
+                or_(
+                    ServicoTcpo.cliente_id.is_(None),          # global TCPO
+                    ServicoTcpo.cliente_id == cliente_id,      # client's own
+                )
+            )
+
+        if categoria_id is not None:
+            base_filter.append(ServicoTcpo.categoria_id == categoria_id)
+        if q:
+            base_filter.append(ServicoTcpo.descricao.ilike(f"%{q}%"))
+
+        count_result = await self.db.execute(
+            select(func.count()).select_from(ServicoTcpo).where(*base_filter)
+        )
+        total = count_result.scalar_one()
+
+        items_result = await self.db.execute(
+            select(ServicoTcpo)
+            .where(*base_filter)
+            .order_by(ServicoTcpo.codigo_origem)
+            .offset(offset)
+            .limit(limit)
+        )
+        return list(items_result.scalars().all()), total
+
     async def get_without_embeddings(self, limit: int = 100) -> list[ServicoTcpo]:
         from app.models.tcpo_embeddings import TcpoEmbedding
 

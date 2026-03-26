@@ -25,6 +25,7 @@ class ItemPendenteResponse(BaseModel):
 
 class AprovarHomologacaoRequest(BaseModel):
     servico_id: UUID
+    cliente_id: UUID  # used to validate ownership before approval
     aprovado: bool = True
     motivo_reprovacao: str | None = Field(default=None, max_length=500)
 

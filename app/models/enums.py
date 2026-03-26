@@ -35,12 +35,14 @@ class StatusValidacaoAssociacao(str, enum.Enum):
 
 
 class PerfilUsuario(str, enum.Enum):
-    CRIADOR = "CRIADOR"
-    APROVADOR = "APROVADOR"
-    ADMIN = "ADMIN"
+    USUARIO = "USUARIO"         # Buscar, criar item próprio, confirmar associação
+    APROVADOR = "APROVADOR"     # Tudo do USUARIO + homologar itens do cliente
+    ADMIN = "ADMIN"             # Acesso global, múltiplos clientes
 
 
 class TipoOperacaoAuditoria(str, enum.Enum):
     CREATE = "CREATE"
     UPDATE = "UPDATE"
     DELETE = "DELETE"
+    APROVAR = "APROVAR"
+    REPROVAR = "REPROVAR"

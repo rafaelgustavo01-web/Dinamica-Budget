@@ -5,11 +5,8 @@ Manages the lifecycle of PROPRIA items:
   PENDENTE → APROVADO  (via POST /homologacao/aprovar with approved=True)
   PENDENTE → REPROVADO (via POST /homologacao/aprovar with approved=False)
 
-Business rules:
-  - Only users with APROVADOR or ADMIN perfil can approve/reject items.
-  - When approved, embedding is synced automatically.
-  - When rejected, item is kept (for audit) but never shown in search results.
-  - All status changes are captured by SQLAlchemy audit hooks.
+RBAC enforcement is performed at the endpoint layer.
+This service validates ownership (servico.cliente_id == request.cliente_id).
 """
 
 import math
@@ -21,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import AuthorizationError, NotFoundError, ValidationError
 from app.core.logging import get_logger
-from app.models.enums import OrigemItem, PerfilUsuario, StatusHomologacao
+from app.models.enums import OrigemItem, StatusHomologacao, TipoOperacaoAuditoria
 from app.models.servico_tcpo import ServicoTcpo
 from app.repositories.servico_tcpo_repository import ServicoTcpoRepository
 from app.schemas.common import PaginatedResponse
@@ -34,6 +31,34 @@ from app.schemas.homologacao import (
 from app.services.embedding_sync_service import embedding_sync_service
 
 logger = get_logger(__name__)
+
+
+async def _registrar_auditoria(
+    db: AsyncSession,
+    tabela: str,
+    registro_id: UUID,
+    operacao: TipoOperacaoAuditoria,
+    dados_anteriores: dict | None,
+    dados_novos: dict | None,
+    usuario_id: UUID | None,
+    cliente_id: UUID | None,
+    campo_alterado: str | None = None,
+) -> None:
+    from app.models.auditoria_log import AuditoriaLog
+
+    log = AuditoriaLog(
+        id=uuid.uuid4(),
+        tabela=tabela,
+        registro_id=str(registro_id),
+        operacao=operacao,
+        campo_alterado=campo_alterado,
+        dados_anteriores=dados_anteriores,
+        dados_novos=dados_novos,
+        usuario_id=usuario_id,
+        cliente_id=cliente_id,
+    )
+    db.add(log)
+    await db.flush()
 
 
 class HomologacaoService:
@@ -62,22 +87,20 @@ class HomologacaoService:
     async def aprovar(
         self,
         request: AprovarHomologacaoRequest,
-        aprovador_email: str,
         aprovador_id: UUID,
-        aprovador_perfis: list[str],
+        aprovador_email: str,
         db: AsyncSession,
     ) -> AprovarHomologacaoResponse:
-        # RBAC check
-        allowed = {PerfilUsuario.APROVADOR.value, PerfilUsuario.ADMIN.value}
-        if not any(p in allowed for p in aprovador_perfis):
-            raise AuthorizationError(
-                "Somente usuários com perfil APROVADOR ou ADMIN podem homologar itens."
-            )
-
         repo = ServicoTcpoRepository(db)
         servico = await repo.get_active_by_id(request.servico_id)
         if not servico:
             raise NotFoundError("ServicoTcpo", str(request.servico_id))
+
+        # Ownership guard: servico must belong to the client in the request
+        if servico.cliente_id != request.cliente_id:
+            raise AuthorizationError(
+                "Item não pertence ao cliente informado."
+            )
 
         if servico.status_homologacao != StatusHomologacao.PENDENTE:
             raise ValidationError(
@@ -85,23 +108,37 @@ class HomologacaoService:
             )
 
         now = datetime.now(UTC)
+        status_anterior = servico.status_homologacao.value
 
         if request.aprovado:
             servico.status_homologacao = StatusHomologacao.APROVADO
             servico.aprovado_por_id = aprovador_id
             servico.data_aprovacao = now
-            # Sync embedding now that item is approved
             await embedding_sync_service.sync_create_or_update(servico.id, db)
             mensagem = "Item homologado e disponível para busca."
+            operacao = TipoOperacaoAuditoria.APROVAR
             logger.info("item_aprovado", servico_id=str(servico.id), by=aprovador_email)
         else:
             servico.status_homologacao = StatusHomologacao.REPROVADO
             servico.aprovado_por_id = aprovador_id
             servico.data_aprovacao = now
             mensagem = f"Item reprovado. Motivo: {request.motivo_reprovacao or 'não informado'}."
+            operacao = TipoOperacaoAuditoria.REPROVAR
             logger.info("item_reprovado", servico_id=str(servico.id), by=aprovador_email)
 
         await repo.update(servico)
+
+        await _registrar_auditoria(
+            db=db,
+            tabela="servico_tcpo",
+            registro_id=servico.id,
+            operacao=operacao,
+            campo_alterado="status_homologacao",
+            dados_anteriores={"status_homologacao": status_anterior},
+            dados_novos={"status_homologacao": servico.status_homologacao.value},
+            usuario_id=aprovador_id,
+            cliente_id=servico.cliente_id,
+        )
 
         return AprovarHomologacaoResponse(
             servico_id=servico.id,
@@ -114,6 +151,7 @@ class HomologacaoService:
     async def criar_item_proprio(
         self,
         request: CriarItemProprioRequest,
+        criado_por_id: UUID,
         db: AsyncSession,
     ) -> ServicoTcpo:
         """
@@ -132,7 +170,24 @@ class HomologacaoService:
             origem=OrigemItem.PROPRIA,
             status_homologacao=StatusHomologacao.PENDENTE,
         )
-        return await repo.create(servico)
+        servico = await repo.create(servico)
+
+        await _registrar_auditoria(
+            db=db,
+            tabela="servico_tcpo",
+            registro_id=servico.id,
+            operacao=TipoOperacaoAuditoria.CREATE,
+            dados_anteriores=None,
+            dados_novos={
+                "descricao": servico.descricao,
+                "origem": servico.origem.value,
+                "status_homologacao": servico.status_homologacao.value,
+            },
+            usuario_id=criado_por_id,
+            cliente_id=servico.cliente_id,
+        )
+
+        return servico
 
 
 homologacao_service = HomologacaoService()
