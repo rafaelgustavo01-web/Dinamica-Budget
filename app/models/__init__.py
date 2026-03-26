@@ -1,0 +1,43 @@
+# Re-export all models so Alembic autogenerate can detect them
+from app.models.associacao_inteligente import AssociacaoInteligente
+from app.models.auditoria_log import AuditoriaLog
+from app.models.base import Base, TimestampMixin
+from app.models.categoria_recurso import CategoriaRecurso
+from app.models.cliente import Cliente
+from app.models.composicao_tcpo import ComposicaoTcpo
+from app.models.enums import (
+    OrigemAssociacao,
+    OrigemItem,
+    PerfilUsuario,
+    StatusHomologacao,
+    StatusValidacaoAssociacao,
+    TipoCusto,
+    TipoOperacaoAuditoria,
+)
+from app.models.historico_busca_cliente import HistoricoBuscaCliente
+from app.models.servico_tcpo import ServicoTcpo
+from app.models.tcpo_embeddings import TcpoEmbedding
+from app.models.usuario import Usuario, UsuarioPerfil
+
+__all__ = [
+    "Base",
+    "TimestampMixin",
+    "Usuario",
+    "UsuarioPerfil",
+    "Cliente",
+    "CategoriaRecurso",
+    "ServicoTcpo",
+    "ComposicaoTcpo",
+    "TcpoEmbedding",
+    "HistoricoBuscaCliente",
+    "AssociacaoInteligente",
+    "AuditoriaLog",
+    # enums
+    "TipoCusto",
+    "OrigemItem",
+    "StatusHomologacao",
+    "OrigemAssociacao",
+    "StatusValidacaoAssociacao",
+    "PerfilUsuario",
+    "TipoOperacaoAuditoria",
+]
