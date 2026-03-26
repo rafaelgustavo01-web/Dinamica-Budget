@@ -19,7 +19,10 @@ class TcpoEmbedding(Base):
         primary_key=True,
     )
     vetor: Mapped[list[float] | None] = mapped_column(Vector(EMBEDDING_DIM), nullable=True)
-    metadata: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    # 'metadata' is reserved by SQLAlchemy Declarative API — use embedding_metadata
+    embedding_metadata: Mapped[dict | None] = mapped_column(
+        JSONB, nullable=True, name="metadata"  # DB column keeps the name 'metadata'
+    )
 
     servico: Mapped["ServicoTcpo"] = relationship(
         back_populates="embedding", lazy="noload"

@@ -18,8 +18,10 @@ class HistoricoBuscaCliente(Base):
     cliente_id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("clientes.id"), nullable=False, index=True
     )
-    usuario_id: Mapped[UUID] = mapped_column(
-        PGUUID(as_uuid=True), ForeignKey("usuarios.id"), nullable=False, index=True
+    # nullable=True: matches migration 006 (backward compat with pre-migration rows).
+    # Application code always provides usuario_id for new records.
+    usuario_id: Mapped[UUID | None] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("usuarios.id", ondelete="SET NULL"), nullable=True, index=True
     )
     texto_busca: Mapped[str] = mapped_column(Text, nullable=False)
     criado_em: Mapped[datetime] = mapped_column(
@@ -27,4 +29,4 @@ class HistoricoBuscaCliente(Base):
     )
 
     cliente: Mapped["Cliente"] = relationship(back_populates="historicos", lazy="noload")
-    usuario: Mapped["Usuario"] = relationship(back_populates="historicos", lazy="noload")
+    usuario: Mapped["Usuario | None"] = relationship(back_populates="historicos", lazy="noload")

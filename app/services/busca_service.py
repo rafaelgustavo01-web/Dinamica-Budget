@@ -276,13 +276,24 @@ class BuscaService:
             limit=limit,
         )
 
+        if not candidates:
+            return []
+
+        # P1.7: Batch load — single query for all candidates, eliminates N+1
+        candidate_ids = [c[0] for c in candidates]
+        servicos_map = await servico_repo.get_active_by_ids(candidate_ids)
+
+        # Build score lookup from candidates
+        scores = {c[0]: c[1] for c in candidates}
+
         results = []
-        for servico_id, score, metadata in candidates:
-            servico = await servico_repo.get_active_by_id(servico_id)
+        for servico_id in candidate_ids:
+            servico = servicos_map.get(servico_id)
             if not servico:
                 continue
             if servico.status_homologacao != StatusHomologacao.APROVADO:
                 continue
+            score = scores[servico_id]
             results.append(
                 ResultadoBusca(
                     id_tcpo=servico.id,

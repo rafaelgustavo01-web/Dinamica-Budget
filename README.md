@@ -20,6 +20,7 @@
 - [Setup e Instalação](#setup-e-instalação)
 - [Variáveis de Ambiente](#variáveis-de-ambiente)
 - [Regras de Segurança e Governança](#regras-de-segurança-e-governança)
+- [Correções Sprint 1 (P0/P1)](#correções-sprint-1-p0p1)
 - [Riscos Técnicos e Mitigações](#riscos-técnicos-e-mitigações)
 
 ---
@@ -653,4 +654,49 @@ Cada registro em `auditoria_log` tem `usuario_id` e `cliente_id` reais. Logs sã
 
 ---
 
-*Dinamica Budget — Backend API v2.1 | On-Premise | FastAPI + PostgreSQL + pgvector*
+---
+
+## Correções Sprint 1 (P0/P1)
+
+Todas as correções abaixo foram aplicadas antes do avanço para Sprint 2.
+
+### P0 — Crítico
+
+| # | Item | Arquivo(s) | Correção |
+|---|---|---|---|
+| P0.1 | Cross-tenant isolation em `GET /servicos/{id}` | `endpoints/servicos.py` | Adicionado check: itens PROPRIA retornam 404 se o usuário não tiver vínculo com o `cliente_id` do item. Admin faz bypass. TCPO global sem check. |
+| P0.2 | `POST /auth/usuarios` aberto sem auth | `endpoints/auth.py` | Adicionado `Depends(get_current_admin_user)` — apenas `is_admin=True` pode criar usuários. Não-autenticado → 401. Autenticado sem admin → 403. |
+| P0.3 | `SECRET_KEY` default aceita no startup | `core/config.py`, `main.py` | Função `validate_startup_config()` criada. Chamada no lifespan startup. Rejeita keys inseguras (< 32 chars, valores default conhecidos). App não sobe. |
+| P0.4 | `allow_origins=["*"]` no CORS | `main.py`, `core/config.py` | Substituído por `settings.ALLOWED_ORIGINS` (lista configurável). Default: `["http://localhost:3000", "http://localhost:8080"]`. Configurável via `ALLOWED_ORIGINS` no `.env`. |
+
+### P1 — Importante
+
+| # | Item | Arquivo(s) | Correção |
+|---|---|---|---|
+| P1.5 | `historico.usuario_id` nullable mismatch ORM vs migration | `models/historico_busca_cliente.py` | Alterado `nullable=False` → `nullable=True` e `Mapped[UUID]` → `Mapped[UUID \| None]`. Alinhado com migration 006 que usa `nullable=True` por backward compat. |
+| P1.6 | Senha sem validação mínima | `schemas/auth.py` | Adicionado `Field(min_length=8)` em `UsuarioCreate.password`. Senhas menores retornam 422. |
+| P1.7 | N+1 na Fase 3 (busca semântica) | `services/busca_service.py`, `repositories/servico_tcpo_repository.py` | Adicionado `get_active_by_ids(ids)` ao repositório (batch SELECT com `IN`). Fase 3 agora carrega todos os candidatos em **uma única query** ao invés de N queries individuais. |
+| P1.8 | Sem rate limit nos endpoints de auth | `core/rate_limit.py` (novo), `endpoints/auth.py`, `main.py`, `requirements.txt` | Adicionado `slowapi` (in-memory, sem infra externa). Login: 10 req/min por IP. Refresh: 20 req/min. Registrado no `app.state.limiter`. |
+
+### Bug colateral corrigido
+
+| Item | Arquivo | Correção |
+|---|---|---|
+| `TcpoEmbedding.metadata` conflitava com atributo reservado do SQLAlchemy Declarative API | `models/tcpo_embeddings.py`, `repositories/tcpo_embeddings_repository.py` | Renomeado atributo ORM para `embedding_metadata`; coluna no banco mantém nome `metadata` via `name="metadata"`. |
+
+### Suite de testes
+
+| Arquivo | Testes | Resultado |
+|---|---|---|
+| `tests/unit/test_busca_service.py` | 8 testes (normalize × 4, fase1 × 3, fase3 N+1) | ✅ 25/25 PASS |
+| `tests/unit/test_security_p0.py` | 17 testes (SECRET_KEY, CORS, senha, cross-tenant × 4, admin dep, rate limit) | ✅ |
+| `tests/integration/test_auth_access_control.py` | 5 testes (401 sem auth, 422 senha curta, health, CORS header, app.state.limiter) | Requer DB |
+
+Para rodar os testes unitários (sem DB):
+```bash
+pytest app/tests/unit/ -v
+```
+
+---
+
+*Dinamica Budget — Backend API v2.2 | On-Premise | FastAPI + PostgreSQL + pgvector*

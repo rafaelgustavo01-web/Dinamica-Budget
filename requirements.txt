@@ -17,6 +17,7 @@ pydantic[email]==2.10.3
 # Security / Auth
 passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
+slowapi==0.1.9
 
 # ML / Embeddings
 sentence-transformers==3.3.1

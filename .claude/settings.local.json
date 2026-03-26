@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m py_compile app/core/config.py app/core/rate_limit.py app/main.py app/api/v1/endpoints/auth.py app/api/v1/endpoints/servicos.py app/models/historico_busca_cliente.py app/schemas/auth.py app/services/busca_service.py app/repositories/servico_tcpo_repository.py)",
+      "Bash(python -m py_compile app/tests/unit/test_busca_service.py app/tests/unit/test_security_p0.py app/tests/integration/test_auth_access_control.py)",
+      "Bash(python -m pytest app/tests/unit/ -v --tb=short)",
+      "Bash(pip install:*)",
+      "Bash(python -m pytest app/tests/unit/ -v --tb=short --no-header)",
+      "Bash(python -m pytest app/tests/unit/ -v --no-header)"
+    ]
+  }
+}

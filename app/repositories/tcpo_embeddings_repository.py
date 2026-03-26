@@ -22,11 +22,15 @@ class TcpoEmbeddingsRepository(BaseRepository[TcpoEmbedding]):
         existing = await self.db.get(TcpoEmbedding, servico_id)
         if existing:
             existing.vetor = vetor
-            existing.metadata = metadata
+            existing.embedding_metadata = metadata  # 'metadata' is reserved by SQLAlchemy
             await self.db.flush()
             return existing
 
-        embedding = TcpoEmbedding(id=servico_id, vetor=vetor, metadata=metadata)
+        embedding = TcpoEmbedding(
+            id=servico_id,
+            vetor=vetor,
+            embedding_metadata=metadata,  # ORM attribute renamed to embedding_metadata
+        )
         self.db.add(embedding)
         await self.db.flush()
         return embedding

@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy import select
 
-from app.core.dependencies import get_current_active_user, get_db
+from app.core.dependencies import get_current_active_user, get_current_admin_user, get_db
+from app.core.rate_limit import limiter
 from app.models.usuario import UsuarioPerfil
 from app.repositories.usuario_repository import UsuarioRepository
 from app.schemas.auth import (
@@ -26,7 +27,9 @@ def _get_auth_service(db: AsyncSession = Depends(get_db)) -> AuthService:
 
 
 @router.post("/login", response_model=TokenResponse)
+@limiter.limit("10/minute")
 async def login(
+    request: Request,  # required by slowapi for rate limiting
     credentials: LoginRequest,
     db: AsyncSession = Depends(get_db),
     svc: AuthService = Depends(_get_auth_service),
@@ -35,12 +38,14 @@ async def login(
 
 
 @router.post("/refresh", response_model=TokenResponse)
+@limiter.limit("20/minute")
 async def refresh_token(
-    request: RefreshRequest,
+    request: Request,  # required by slowapi for rate limiting
+    body: RefreshRequest,
     db: AsyncSession = Depends(get_db),
     svc: AuthService = Depends(_get_auth_service),
 ) -> TokenResponse:
-    return await svc.refresh_token(request.refresh_token, db)
+    return await svc.refresh_token(body.refresh_token, db)
 
 
 @router.post("/logout", status_code=204)
@@ -80,7 +85,12 @@ async def me(
 @router.post("/usuarios", response_model=UsuarioResponse, status_code=201)
 async def create_usuario(
     data: UsuarioCreate,
+    _admin=Depends(get_current_admin_user),  # P0: admin-only endpoint
     svc: AuthService = Depends(_get_auth_service),
 ) -> UsuarioResponse:
+    """
+    Create a new user. Requires an authenticated admin (is_admin=True).
+    Unauthenticated or non-admin requests receive 401/403.
+    """
     user = await svc.create_user(data)
     return UsuarioResponse.model_validate(user)

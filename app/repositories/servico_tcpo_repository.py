@@ -26,6 +26,21 @@ class ServicoTcpoRepository(BaseRepository[ServicoTcpo]):
         )
         return result.scalar_one_or_none()
 
+    async def get_active_by_ids(self, ids: list[UUID]) -> dict[UUID, ServicoTcpo]:
+        """
+        Batch fetch — eliminates N+1 in Phase 3 semantic search.
+        Returns dict keyed by id for O(1) lookup after fetch.
+        """
+        if not ids:
+            return {}
+        result = await self.db.execute(
+            select(ServicoTcpo).where(
+                ServicoTcpo.id.in_(ids),
+                ServicoTcpo.deleted_at.is_(None),
+            )
+        )
+        return {s.id: s for s in result.scalars().all()}
+
     async def list_paginated(
         self,
         q: str | None,

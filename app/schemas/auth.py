@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class LoginRequest(BaseModel):
@@ -20,7 +20,8 @@ class RefreshRequest(BaseModel):
 class UsuarioCreate(BaseModel):
     nome: str
     email: EmailStr
-    password: str
+    # P1.6: minimum 8 characters required
+    password: str = Field(min_length=8, description="Senha com mínimo de 8 caracteres.")
     is_admin: bool = False
 
 
