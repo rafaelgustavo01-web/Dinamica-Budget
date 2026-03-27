@@ -60,27 +60,62 @@ export function LoginPage() {
         display: 'grid',
         gridTemplateColumns: { xs: '1fr', lg: '1.15fr 0.85fr' },
         background:
-          'linear-gradient(135deg, #0f1720 0%, #153242 42%, #f3f5f7 42%, #f3f5f7 100%)',
+          'linear-gradient(135deg, #1B2A4A 0%, #1B3A6B 46%, #F8F9FA 46%, #F8F9FA 100%)',
       }}
     >
       <Box
         sx={{
+          position: 'relative',
+          overflow: 'hidden',
           display: 'flex',
           alignItems: 'flex-end',
           px: { xs: 3, md: 6 },
           py: { xs: 4, md: 6 },
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            right: { xs: -88, md: -56 },
+            top: { xs: 36, md: 64 },
+            width: { xs: 180, md: 260 },
+            height: { xs: 180, md: 260 },
+            borderRadius: 10,
+            border: '18px solid rgba(255,255,255,0.08)',
+            transform: 'rotate(45deg)',
+          },
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            left: { xs: -56, md: -16 },
+            top: { xs: -40, md: -20 },
+            width: 180,
+            height: 180,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(232,166,35,0.32), transparent 70%)',
+          },
         }}
       >
-        <Stack spacing={2.5} sx={{ maxWidth: 560, color: 'common.white' }}>
-          <Typography variant="overline" sx={{ color: 'rgba(255,255,255,0.64)' }}>
-            Dinamica Budget
+        <Stack spacing={2.5} sx={{ maxWidth: 560, color: 'common.white', position: 'relative' }}>
+          <Box
+            sx={{
+              width: 64,
+              height: 6,
+              borderRadius: 999,
+              background: 'linear-gradient(90deg, #E8A623 0%, #F0C05C 100%)',
+            }}
+          />
+          <Typography variant="overline" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+            Construtora Dinâmica
           </Typography>
           <Typography variant="h1" sx={{ fontSize: { xs: '2.2rem', md: '3.6rem' } }}>
-            Operação orçamentária com fluxo rastreável e aderente ao backend.
+            Dinâmica Budget para operação orçamentária com rastreabilidade e controle.
           </Typography>
           <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.78)' }}>
-            Catálogo, busca inteligente, homologação, governança e RBAC por cliente em uma
-            interface interna preparada para intranet.
+            Catálogo, busca inteligente, homologação, composições e governança por cliente em
+            uma interface interna preparada para intranet corporativa.
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.62)', maxWidth: 480 }}>
+            Acesso seguro, integração direta com o backend oficial e experiência operacional
+            objetiva para o time interno.
           </Typography>
         </Stack>
       </Box>
@@ -93,7 +128,15 @@ export function LoginPage() {
           py: 4,
         }}
       >
-        <Paper sx={{ width: '100%', maxWidth: 460, p: { xs: 3, md: 4 } }}>
+        <Paper
+          sx={{
+            width: '100%',
+            maxWidth: 460,
+            p: { xs: 3, md: 4 },
+            border: '1px solid rgba(27,58,107,0.08)',
+            boxShadow: '0 24px 48px rgba(27,42,74,0.12)',
+          }}
+        >
           <Stack spacing={3}>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <Box
@@ -103,8 +146,10 @@ export function LoginPage() {
                   borderRadius: 2.5,
                   display: 'grid',
                   placeItems: 'center',
-                  backgroundColor: 'primary.main',
+                  background:
+                    'linear-gradient(135deg, rgba(27,58,107,1) 0%, rgba(36,54,96,1) 100%)',
                   color: 'common.white',
+                  boxShadow: '0 10px 20px rgba(27,58,107,0.18)',
                 }}
               >
                 <LockOutlinedIcon />

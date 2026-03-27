@@ -55,8 +55,8 @@ export function FeedbackProvider({ children }: PropsWithChildren) {
         <Alert
           onClose={() => setState((current) => ({ ...current, open: false }))}
           severity={state.severity}
-          variant="filled"
-          sx={{ minWidth: 280 }}
+          variant="standard"
+          sx={{ minWidth: 320, boxShadow: 3 }}
         >
           {state.message}
         </Alert>

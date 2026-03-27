@@ -46,9 +46,11 @@ export function Topbar({ onMenuClick }: TopbarProps) {
       sx={{
         width: { lg: `calc(100% - 288px)` },
         ml: { lg: '288px' },
-        backgroundColor: 'rgba(243,245,247,0.88)',
+        backgroundColor: 'rgba(255,255,255,0.92)',
+        backdropFilter: 'blur(10px)',
         borderBottom: '1px solid',
         borderColor: 'divider',
+        boxShadow: '0 8px 24px rgba(27,42,74,0.06)',
       }}
     >
       <Toolbar
@@ -70,18 +72,25 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
         <Box sx={{ minWidth: 0 }}>
           <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.3 }}>
-            <Typography variant="h6" sx={{ fontSize: 22, lineHeight: 1.2 }}>
+            <Typography variant="h5" sx={{ lineHeight: 1.2 }}>
               {currentTitle}
             </Typography>
             {currentStatus !== 'active' ? (
               <Chip
                 size="small"
                 label={getStatusLabel(currentStatus)}
-                color={currentStatus === 'partial' ? 'secondary' : 'default'}
+                sx={
+                  currentStatus === 'partial'
+                    ? {
+                        color: '#8B6209',
+                        backgroundColor: '#FDF3DD',
+                      }
+                    : undefined
+                }
               />
             ) : null}
           </Stack>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 640 }}>
             {selectedClientId
               ? `Contexto de cliente ativo: ${shortenUuid(selectedClientId)}`
               : 'Selecione ou informe um cliente quando o fluxo exigir escopo.'}
@@ -101,15 +110,19 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           {user ? (
             <Chip
               label={user.is_admin ? 'Administrador' : user.email}
-              color="primary"
               variant="outlined"
               onClick={() => navigate('/perfil')}
+              sx={{
+                borderColor: 'rgba(27,58,107,0.18)',
+                color: 'primary.main',
+                backgroundColor: 'rgba(255,255,255,0.72)',
+              }}
             />
           ) : null}
 
           <Button
             variant="text"
-            color="inherit"
+            color="primary"
             startIcon={<LogoutOutlinedIcon />}
             onClick={() => void logout()}
           >
