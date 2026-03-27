@@ -15,7 +15,9 @@
       "Bash(python -m pytest app/tests/unit/ -v)",
       "Bash(npx tsc:*)",
       "Bash(python -m pytest app/tests/unit/ -q)",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npm list:*)",
+      "Bash(npm install:*)"
     ]
   }
 }
