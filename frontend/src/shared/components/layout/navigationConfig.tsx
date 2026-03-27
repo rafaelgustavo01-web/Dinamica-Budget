@@ -57,8 +57,7 @@ export const navigationItems: NavigationItem[] = [
     path: '/composicoes',
     group: 'Operação',
     icon: <HubOutlinedIcon fontSize="small" />,
-    status: 'partial',
-    statusLabel: 'Somente visualização',
+    status: 'active',
     visible: () => true,
   },
   {
@@ -106,7 +105,7 @@ export const navigationItems: NavigationItem[] = [
     path: '/clientes',
     group: 'Governança',
     icon: <StorefrontOutlinedIcon fontSize="small" />,
-    status: 'partial',
+    status: 'active',
     visible: (user) => Boolean(user?.is_admin),
   },
   {

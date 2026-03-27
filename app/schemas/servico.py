@@ -11,6 +11,8 @@ class ServicoTcpoResponse(BaseModel):
     unidade_medida: str
     custo_unitario: Decimal
     categoria_id: int | None
+    origem: str          # 'TCPO' | 'PROPRIA'
+    cliente_id: UUID | None  # None for global TCPO items
 
     model_config = ConfigDict(from_attributes=True)
 

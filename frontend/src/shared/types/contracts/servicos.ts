@@ -7,6 +7,8 @@ export interface ServicoTcpoResponse {
   unidade_medida: string;
   custo_unitario: DecimalValue;
   categoria_id: number | null;
+  origem: 'TCPO' | 'PROPRIA';
+  cliente_id: string | null;
 }
 
 export interface ComposicaoItemResponse {

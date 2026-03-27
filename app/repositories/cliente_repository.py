@@ -58,3 +58,20 @@ class ClienteRepository(BaseRepository[Cliente]):
         await self.db.flush()
         await self.db.refresh(cliente)
         return cliente
+
+    async def update_cliente(
+        self,
+        cliente_id: UUID,
+        nome_fantasia: str | None,
+        is_active: bool | None,
+    ) -> Cliente | None:
+        cliente = await self.get_by_id(cliente_id)
+        if not cliente:
+            return None
+        if nome_fantasia is not None:
+            cliente.nome_fantasia = nome_fantasia
+        if is_active is not None:
+            cliente.is_active = is_active
+        await self.db.flush()
+        await self.db.refresh(cliente)
+        return cliente

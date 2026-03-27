@@ -7,14 +7,15 @@ Routes:
 """
 
 import math
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_admin_user, get_db
-from app.core.exceptions import ConflictError
+from app.core.exceptions import ConflictError, NotFoundError
 from app.repositories.cliente_repository import ClienteRepository
-from app.schemas.cliente import ClienteCreate, ClienteResponse
+from app.schemas.cliente import ClienteCreate, ClientePatch, ClienteResponse
 from app.schemas.common import PaginatedResponse
 
 router = APIRouter(prefix="/clientes", tags=["clientes"])
@@ -69,4 +70,26 @@ async def create_cliente(
         nome_fantasia=data.nome_fantasia,
         cnpj=data.cnpj,
     )
+    return ClienteResponse.model_validate(cliente)
+
+
+@router.patch(
+    "/{cliente_id}",
+    response_model=ClienteResponse,
+    summary="Editar cliente (admin)",
+    dependencies=[Depends(get_current_admin_user)],
+)
+async def patch_cliente(
+    cliente_id: UUID,
+    data: ClientePatch,
+    repo: ClienteRepository = Depends(_get_repo),
+) -> ClienteResponse:
+    """Admin-only: partially update a client's nome_fantasia and/or is_active."""
+    cliente = await repo.update_cliente(
+        cliente_id=cliente_id,
+        nome_fantasia=data.nome_fantasia,
+        is_active=data.is_active,
+    )
+    if not cliente:
+        raise NotFoundError("Cliente", str(cliente_id))
     return ClienteResponse.model_validate(cliente)

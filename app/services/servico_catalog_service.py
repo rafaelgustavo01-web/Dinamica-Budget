@@ -177,6 +177,9 @@ class ServicoCatalogService:
         db.add(comp)
         await db.flush()
 
+        # Propagate cost change to PROPRIA parent (price roll-up)
+        await self.recalcular_custo_pai(filho_id, db)
+
         logger.info(
             "composicao_adicionada",
             pai_id=str(pai_id),
@@ -358,8 +361,13 @@ class ServicoCatalogService:
         if not comp:
             raise NotFoundError("ComposicaoTcpo", str(componente_id))
 
+        filho_id_salvo = comp.insumo_filho_id
         await db.delete(comp)
         await db.flush()
+
+        # Propagate cost change to PROPRIA parent (price roll-up)
+        await self.recalcular_custo_pai(filho_id_salvo, db)
+
         logger.info(
             "componente_removido",
             pai_id=str(pai_id),

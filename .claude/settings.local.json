@@ -11,7 +11,11 @@
       "Bash(python -m pytest app/tests/unit/ --no-header -q)",
       "Bash(python -m pytest app/tests/unit/ --no-header -v --tb=short)",
       "Bash(python -m pytest app/tests/unit/test_composicao_clone.py -v)",
-      "Bash(python -m pytest app/tests/unit/test_governance_routes.py app/tests/unit/test_security_p0.py -v --tb=short)"
+      "Bash(python -m pytest app/tests/unit/test_governance_routes.py app/tests/unit/test_security_p0.py -v --tb=short)",
+      "Bash(python -m pytest app/tests/unit/ -v)",
+      "Bash(npx tsc:*)",
+      "Bash(python -m pytest app/tests/unit/ -q)",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }

@@ -22,3 +22,8 @@ class ClienteCreate(BaseModel):
         pattern=r"^\d{14}$",
         description="CNPJ com 14 dígitos numéricos, sem máscara.",
     )
+
+
+class ClientePatch(BaseModel):
+    nome_fantasia: str | None = Field(default=None, min_length=2, max_length=255)
+    is_active: bool | None = None

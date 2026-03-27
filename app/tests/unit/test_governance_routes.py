@@ -143,6 +143,11 @@ def test_create_cliente_requires_admin():
     assert _route_has_admin_dep(router, create_cliente)
 
 
+def test_patch_cliente_requires_admin():
+    from app.api.v1.endpoints.clientes import router, patch_cliente
+    assert _route_has_admin_dep(router, patch_cliente)
+
+
 # ─── 9: Associations governance ──────────────────────────────────────────────
 
 def test_list_associacoes_endpoint_exists():

@@ -289,6 +289,7 @@ async def test_adicionar_componente_chama_detectar_ciclo():
     with (
         patch("app.services.servico_catalog_service.ServicoTcpoRepository") as MockRepo,
         patch.object(svc, "_detectar_ciclo", new=AsyncMock(return_value=False)) as mock_ciclo,
+        patch.object(svc, "recalcular_custo_pai", new=AsyncMock()),
     ):
         mock_repo = AsyncMock()
         mock_repo.get_active_by_id = AsyncMock(side_effect=lambda id: pai if id == pai_id else filho)
@@ -383,3 +384,89 @@ def test_adicionar_componente_schema_rejects_zero_quantidade():
             insumo_filho_id=uuid.uuid4(),
             quantidade_consumo=Decimal("0"),
         )
+
+
+# ─── Price rollup: adicionar chama recalcular_custo_pai ──────────────────────
+
+@pytest.mark.asyncio
+async def test_adicionar_componente_dispara_recalcular_custo():
+    """After adding a component, recalcular_custo_pai must be called."""
+    from app.services.servico_catalog_service import ServicoCatalogService
+
+    svc = ServicoCatalogService()
+    pai_id = uuid.uuid4()
+    filho_id = uuid.uuid4()
+    mock_db = AsyncMock()
+
+    pai = MagicMock()
+    pai.id = pai_id
+    pai.descricao = "Pai"
+
+    filho = MagicMock()
+    filho.id = filho_id
+    filho.descricao = "Filho"
+
+    with (
+        patch("app.services.servico_catalog_service.ServicoTcpoRepository") as MockRepo,
+        patch.object(svc, "_detectar_ciclo", new=AsyncMock(return_value=False)),
+        patch.object(svc, "recalcular_custo_pai", new=AsyncMock()) as mock_recalc,
+    ):
+        mock_repo = AsyncMock()
+        mock_repo.get_active_by_id = AsyncMock(
+            side_effect=lambda id: pai if id == pai_id else filho
+        )
+        MockRepo.return_value = mock_repo
+        mock_db.add = MagicMock()
+        mock_db.flush = AsyncMock()
+
+        await svc.adicionar_composicao(
+            pai_id=pai_id,
+            filho_id=filho_id,
+            quantidade_consumo=Decimal("1.0"),
+            db=mock_db,
+        )
+
+    mock_recalc.assert_awaited_once_with(filho_id, mock_db)
+
+
+@pytest.mark.asyncio
+async def test_remover_componente_dispara_recalcular_custo():
+    """After removing a component, recalcular_custo_pai must be called with the child's id."""
+    from app.services.servico_catalog_service import ServicoCatalogService
+    from app.models.enums import OrigemItem
+
+    svc = ServicoCatalogService()
+    pai_id = uuid.uuid4()
+    componente_id = uuid.uuid4()
+    filho_id = uuid.uuid4()
+    mock_db = AsyncMock()
+
+    pai = MagicMock()
+    pai.id = pai_id
+    pai.origem = OrigemItem.PROPRIA
+
+    comp = MagicMock()
+    comp.id = componente_id
+    comp.insumo_filho_id = filho_id
+
+    mock_result = MagicMock()
+    mock_result.scalar_one_or_none = MagicMock(return_value=comp)
+    mock_db.execute = AsyncMock(return_value=mock_result)
+    mock_db.delete = AsyncMock()
+    mock_db.flush = AsyncMock()
+
+    with (
+        patch("app.services.servico_catalog_service.ServicoTcpoRepository") as MockRepo,
+        patch.object(svc, "recalcular_custo_pai", new=AsyncMock()) as mock_recalc,
+    ):
+        mock_repo = AsyncMock()
+        mock_repo.get_active_by_id = AsyncMock(return_value=pai)
+        MockRepo.return_value = mock_repo
+
+        await svc.remover_componente(
+            pai_id=pai_id,
+            componente_id=componente_id,
+            db=mock_db,
+        )
+
+    mock_recalc.assert_awaited_once_with(filho_id, mock_db)
