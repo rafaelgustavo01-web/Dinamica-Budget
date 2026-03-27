@@ -1,15 +1,14 @@
 import uuid
 from uuid import UUID
 
-from sqlalchemy import Boolean, DateTime, String, func
+from sqlalchemy import Boolean, String
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.models.base import Base
-from datetime import datetime
+from app.models.base import Base, TimestampMixin
 
 
-class Cliente(Base):
+class Cliente(Base, TimestampMixin):
     __tablename__ = "clientes"
 
     id: Mapped[UUID] = mapped_column(
@@ -17,9 +16,6 @@ class Cliente(Base):
     )
     nome_fantasia: Mapped[str] = mapped_column(String(255), nullable=False)
     cnpj: Mapped[str] = mapped_column(String(14), unique=True, nullable=False, index=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     associacoes: Mapped[list["AssociacaoInteligente"]] = relationship(

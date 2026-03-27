@@ -77,6 +77,11 @@ class BuscaService:
                 usuario_id=usuario_id,
                 db=db,
             )
+        logger.info(
+            "busca_fase_0_sem_resultados",
+            cliente_id=str(request.cliente_id),
+            texto=texto_norm,
+        )
 
         # ─────────────────────────────────────────────────────────────────────
         # FASE 1: Associação Direta (associacao_inteligente)
@@ -98,6 +103,11 @@ class BuscaService:
                 usuario_id=usuario_id,
                 db=db,
             )
+        logger.info(
+            "busca_fase_1_sem_resultados",
+            cliente_id=str(request.cliente_id),
+            texto=texto_norm,
+        )
 
         # ─────────────────────────────────────────────────────────────────────
         # FASE 2: Fuzzy Global (pg_trgm — catálogo TCPO APROVADO)

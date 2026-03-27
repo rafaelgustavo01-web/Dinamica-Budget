@@ -200,36 +200,65 @@ class ServicoCatalogService:
 
         Note: This updates custo_unitario of the PAI based on sum of its
         composicao children — only for PROPRIA items (TCPO prices are immutable).
+
+        Optimized: uses 4 batch queries instead of N+1 per parent.
         """
-        # Find all parents that contain filho_id
+        # Query 1: find all compositions where this child is used
         result = await db.execute(
             select(ComposicaoTcpo).where(ComposicaoTcpo.insumo_filho_id == filho_id)
         )
         compositions = list(result.scalars().all())
 
-        updated_pais: list[UUID] = []
+        pai_ids = list({c.servico_pai_id for c in compositions})
+        if not pai_ids:
+            return []
 
-        for comp in compositions:
-            pai = await db.get(ServicoTcpo, comp.servico_pai_id)
-            if not pai or pai.origem != OrigemItem.PROPRIA:
-                continue  # never overwrite TCPO catalog prices
-
-            # Reload all children of this parent to compute sum
-            all_children_result = await db.execute(
-                select(ComposicaoTcpo).where(ComposicaoTcpo.servico_pai_id == pai.id)
+        # Query 2: batch-load all PROPRIA parents at once
+        pais_result = await db.execute(
+            select(ServicoTcpo).where(
+                ServicoTcpo.id.in_(pai_ids),
+                ServicoTcpo.origem == OrigemItem.PROPRIA,
             )
-            all_children = list(all_children_result.scalars().all())
+        )
+        pais = list(pais_result.scalars().all())
 
-            total = Decimal("0")
-            for child_comp in all_children:
-                filho = await db.get(ServicoTcpo, child_comp.insumo_filho_id)
-                if filho:
-                    total += child_comp.quantidade_consumo * filho.custo_unitario
+        if not pais:
+            return []
+
+        propria_pai_ids = [p.id for p in pais]
+
+        # Query 3: load ALL compositions for ALL PROPRIA parents
+        all_comps_result = await db.execute(
+            select(ComposicaoTcpo).where(
+                ComposicaoTcpo.servico_pai_id.in_(propria_pai_ids)
+            )
+        )
+        all_comps = list(all_comps_result.scalars().all())
+
+        # Query 4: batch-load ALL referenced children
+        all_filho_ids = list({c.insumo_filho_id for c in all_comps})
+        filhos_result = await db.execute(
+            select(ServicoTcpo).where(ServicoTcpo.id.in_(all_filho_ids))
+        )
+        filhos_map = {f.id: f for f in filhos_result.scalars().all()}
+
+        # In-memory: group compositions by parent and compute costs
+        comps_by_pai: dict[UUID, list[ComposicaoTcpo]] = {}
+        for c in all_comps:
+            comps_by_pai.setdefault(c.servico_pai_id, []).append(c)
+
+        updated_pais: list[UUID] = []
+        for pai in pais:
+            children = comps_by_pai.get(pai.id, [])
+            total = sum(
+                (c.quantidade_consumo * filhos_map[c.insumo_filho_id].custo_unitario
+                 for c in children if c.insumo_filho_id in filhos_map),
+                Decimal("0"),
+            )
 
             if total != pai.custo_unitario:
                 old_val = pai.custo_unitario
                 pai.custo_unitario = total
-                await db.flush()
                 updated_pais.append(pai.id)
                 logger.info(
                     "preco_pai_atualizado",
@@ -237,6 +266,9 @@ class ServicoCatalogService:
                     old=float(old_val),
                     new=float(total),
                 )
+
+        if updated_pais:
+            await db.flush()
 
         return updated_pais
 

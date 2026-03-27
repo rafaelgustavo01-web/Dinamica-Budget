@@ -49,7 +49,7 @@ class ServicoTcpo(Base, TimestampMixin):
     status_homologacao: Mapped[StatusHomologacao] = mapped_column(
         SAEnum(StatusHomologacao, name="status_homologacao_enum"),
         nullable=False,
-        default=StatusHomologacao.APROVADO,  # TCPO items are pre-approved
+        default=StatusHomologacao.PENDENTE,  # Defense-in-depth: default safe state
     )
     aprovado_por_id: Mapped[UUID | None] = mapped_column(
         PGUUID(as_uuid=True),

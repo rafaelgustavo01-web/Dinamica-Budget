@@ -10,6 +10,11 @@ export interface ClienteCreateRequest {
   cnpj: string;
 }
 
+export interface ClientePatchRequest {
+  nome_fantasia?: string;
+  is_active?: boolean;
+}
+
 export interface ClienteListParams {
   is_active?: boolean;
   page: number;

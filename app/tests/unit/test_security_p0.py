@@ -389,3 +389,41 @@ def test_rate_limiter_module_exists():
     from slowapi import Limiter
 
     assert isinstance(limiter, Limiter)
+
+
+# ─── Rate limiting: X-Forwarded-For support ──────────────────────────────────
+
+def test_get_client_ip_uses_forwarded_for():
+    """_get_client_ip should return the first IP from X-Forwarded-For header."""
+    from unittest.mock import MagicMock
+    from app.core.rate_limit import _get_client_ip
+
+    request = MagicMock()
+    request.headers = {"X-Forwarded-For": "1.2.3.4, 10.0.0.1, 192.168.1.1"}
+    request.client.host = "10.0.0.1"
+
+    assert _get_client_ip(request) == "1.2.3.4"
+
+
+def test_get_client_ip_fallback_to_remote_address():
+    """_get_client_ip should fall back to request.client.host without proxy headers."""
+    from unittest.mock import MagicMock
+    from app.core.rate_limit import _get_client_ip
+
+    request = MagicMock()
+    request.headers = {}
+    request.client.host = "192.168.0.50"
+
+    assert _get_client_ip(request) == "192.168.0.50"
+
+
+def test_get_client_ip_handles_no_client():
+    """_get_client_ip should return 'unknown' when request.client is None."""
+    from unittest.mock import MagicMock
+    from app.core.rate_limit import _get_client_ip
+
+    request = MagicMock()
+    request.headers = {}
+    request.client = None
+
+    assert _get_client_ip(request) == "unknown"

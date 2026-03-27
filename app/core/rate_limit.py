@@ -4,12 +4,23 @@ Uses slowapi (in-memory storage) — no external dependencies needed.
 Appropriate for on-premise single-server deployments.
 
 For multi-worker (Gunicorn) deployments, configure a Redis backend:
-  limiter = Limiter(key_func=get_remote_address, storage_uri="redis://localhost:6379")
+  limiter = Limiter(key_func=_get_client_ip, storage_uri="redis://localhost:6379")
 """
 
-from slowapi import Limiter
-from slowapi.util import get_remote_address
+from starlette.requests import Request
 
-# key_func=get_remote_address: rate limits by client IP
+from slowapi import Limiter
+
+
+def _get_client_ip(request: Request) -> str:
+    """Extract real client IP, respecting X-Forwarded-For behind reverse proxy."""
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        # First IP in the chain is the original client
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+# key_func=_get_client_ip: rate limits by real client IP (proxy-aware)
 # default_limits=[]: no global limit — limits applied per-route only
-limiter = Limiter(key_func=get_remote_address, default_limits=[])
+limiter = Limiter(key_func=_get_client_ip, default_limits=[])

@@ -433,7 +433,7 @@ Backend consumido:
 
 Observacao:
 
-- o modulo permanece parcial porque o backend ainda nao publica edicao e ativacao/inativacao via `PATCH /clientes/{id}`
+- o modulo permanece parcial porque a interface atual ainda nao expoe a edicao e a ativacao/inativacao, embora o backend ja publique `PATCH /clientes/{id}`
 
 ### 8.12 Permissoes
 
@@ -581,6 +581,7 @@ sequenceDiagram
 | Usuarios | `userApi.ts` | `setPerfis(usuarioId, payload)` | `/usuarios/{id}/perfis-cliente` | PUT | Definir perfis por cliente |
 | Clientes | `clientsApi.ts` | `list(params)` | `/clientes/` | GET | Listar clientes |
 | Clientes | `clientsApi.ts` | `create(payload)` | `/clientes/` | POST | Cadastrar cliente |
+| Clientes | `clientsApi.ts` | `patch(clienteId, payload)` | `/clientes/{id}` | PATCH | Editar cliente e alterar status |
 | Associacoes | `associationsApi.ts` | `list(params)` | `/busca/associacoes` | GET | Listar associacoes |
 | Associacoes | `associationsApi.ts` | `remove(id)` | `/busca/associacoes/{id}` | DELETE | Excluir associacao |
 | Composicoes | `composicoesApi.ts` | `clonar(payload)` | `/composicoes/clonar` | POST | Clonar composicao para item proprio |
@@ -664,6 +665,7 @@ sequenceDiagram
 - `ClientsPage`
   - chama `clientsApi.list`
   - chama `clientsApi.create`
+  - a tela ainda nao consome `clientsApi.patch`, embora o metodo ja exista na camada de API
 
 ### Associacoes
 
@@ -734,9 +736,13 @@ No menu principal:
 
 ### 16.1 Clientes
 
-O frontend ja possui listagem e cadastro de clientes. O que continua faltando no backend e:
+O frontend ja possui listagem e cadastro de clientes. O backend ja publica tambem:
 
 - `PATCH /api/v1/clientes/{id}` para edicao e ativacao/inativacao
+
+Pendencia atual:
+
+- conectar a tela `ClientsPage` a esse endpoint no frontend
 
 ### 16.2 Perfil
 
