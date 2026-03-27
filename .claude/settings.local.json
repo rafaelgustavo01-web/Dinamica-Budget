@@ -20,7 +20,17 @@
       "Bash(npm install:*)",
       "Bash(node generate-manual.js)",
       "Bash(python \"C:\\\\Users\\\\rafae\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\b59de472-ebc2-4263-b277-d9e2de261072\\\\6f5e3f00-c7f9-442c-a88b-6a3bbf787302\\\\skills\\\\docx\\\\scripts\\\\office\\\\validate.py\" \"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\docs\\\\Manual_Instalacao_Dinamica_Budget.docx\")",
-      "Bash(powershell -c \"\\(Get-Item ''C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\docs\\\\Manual_Instalacao_Dinamica_Budget.docx''\\).Length\")"
+      "Bash(powershell -c \"\\(Get-Item ''C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\docs\\\\Manual_Instalacao_Dinamica_Budget.docx''\\).Length\")",
+      "Bash(py -3.12 -m uvicorn --version)",
+      "Bash(py -3.11 -m uvicorn --version)",
+      "Bash(py -3 -m uvicorn --version)",
+      "Bash(py --list)",
+      "Bash(py -3.14 -m venv \"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\")",
+      "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -m pip install fastapi uvicorn[standard] slowapi pydantic pydantic-settings python-multipart structlog python-dotenv python-jose[cryptography] passlib[bcrypt] rapidfuzz)",
+      "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -m pip install sqlalchemy[asyncio] asyncpg alembic pgvector)",
+      "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -c \"import secrets; print\\(secrets.token_hex\\(32\\)\\)\")",
+      "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -m pip install email-validator)",
+      "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -c \"import email_validator; print\\(''ok''\\)\")"
     ]
   }
 }
