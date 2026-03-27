@@ -23,9 +23,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import { useAuth } from '../auth/AuthProvider';
+import { ConfirmationDialog } from '../../shared/components/ConfirmationDialog';
 import { DataTable } from '../../shared/components/DataTable';
 import { EmptyState } from '../../shared/components/EmptyState';
 import { PageHeader } from '../../shared/components/PageHeader';
+import { useFeedback } from '../../shared/components/feedback/FeedbackProvider';
 import { composicoesApi } from '../../shared/services/api/composicoesApi';
 import { servicesApi } from '../../shared/services/api/servicesApi';
 import { extractApiErrorMessage } from '../../shared/services/api/apiClient';
@@ -35,6 +37,7 @@ import { formatCurrency } from '../../shared/utils/format';
 
 export function CompositionsPage() {
   const { user, selectedClientId } = useAuth();
+  const { showMessage } = useFeedback();
   const queryClient = useQueryClient();
 
   const [query, setQuery] = useState('');
@@ -53,6 +56,10 @@ export function CompositionsPage() {
   const [addSearchPage] = useState(1);
   const [selectedComponent, setSelectedComponent] = useState<ServicoTcpoResponse | null>(null);
   const [addQty, setAddQty] = useState('1');
+  const [componentToRemove, setComponentToRemove] = useState<{
+    id: string;
+    descricao: string;
+  } | null>(null);
 
   const canEdit =
     Boolean(selectedClientId) &&
@@ -103,7 +110,9 @@ export function CompositionsPage() {
         descricao: cloneDesc || undefined,
       }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['composition-page'] });
+      showMessage('Composição clonada com sucesso.');
+      void queryClient.invalidateQueries({ queryKey: ['composition-page'] });
+      void queryClient.invalidateQueries({ queryKey: ['services'] });
       setSelectedService(data.servico);
       setCloneOpen(false);
       setCloneCode('');
@@ -117,10 +126,11 @@ export function CompositionsPage() {
         insumo_filho_id: selectedComponent!.id,
         quantidade_consumo: Number(addQty),
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['composition-page', 'composition', selectedService?.id],
-      });
+    onSuccess: (data) => {
+      showMessage('Componente adicionado com sucesso.');
+      setSelectedService(data.servico);
+      void queryClient.invalidateQueries({ queryKey: ['composition-page'] });
+      void queryClient.invalidateQueries({ queryKey: ['services'] });
       setAddOpen(false);
       setAddSearch('');
       setSelectedComponent(null);
@@ -129,12 +139,13 @@ export function CompositionsPage() {
   });
 
   const removeComponentMutation = useMutation({
-    mutationFn: (componenteId: string) =>
-      composicoesApi.removerComponente(selectedService!.id, componenteId),
+    mutationFn: () =>
+      composicoesApi.removerComponente(selectedService!.id, componentToRemove!.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['composition-page', 'composition', selectedService?.id],
-      });
+      showMessage('Componente removido com sucesso.');
+      setComponentToRemove(null);
+      void queryClient.invalidateQueries({ queryKey: ['composition-page'] });
+      void queryClient.invalidateQueries({ queryKey: ['services'] });
     },
   });
 
@@ -290,7 +301,12 @@ export function CompositionsPage() {
                             <Tooltip title="Remover componente">
                               <IconButton
                                 size="small"
-                                onClick={() => removeComponentMutation.mutate(item.id)}
+                                onClick={() =>
+                                  setComponentToRemove({
+                                    id: item.id,
+                                    descricao: item.descricao_filho,
+                                  })
+                                }
                                 disabled={removeComponentMutation.isPending}
                               >
                                 <DeleteOutlineIcon fontSize="small" />
@@ -409,6 +425,22 @@ export function CompositionsPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <ConfirmationDialog
+        open={Boolean(componentToRemove)}
+        title="Remover componente da composição?"
+        confirmLabel="Remover"
+        confirmColor="error"
+        isLoading={removeComponentMutation.isPending}
+        onCancel={() => setComponentToRemove(null)}
+        onConfirm={() => removeComponentMutation.mutate()}
+      >
+        <Typography variant="body2" color="text.secondary">
+          {componentToRemove
+            ? `O componente "${componentToRemove.descricao}" será removido desta composição própria.`
+            : 'Confirme a remoção do componente selecionado.'}
+        </Typography>
+      </ConfirmationDialog>
     </>
   );
 }

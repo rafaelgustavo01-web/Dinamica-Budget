@@ -234,8 +234,9 @@ Arquivos principais:
 
 Observacao:
 
-- as rotas continuam preparadas tecnicamente, mas `Clientes`, `Permissoes` e `Associacoes` foram removidas do menu principal ate que o backend publique operacao suficiente para uso real
-- `Composicoes` permanece visivel no menu com sinalizacao de escopo parcial, pois ja possui leitura e visualizacao funcional
+- `Clientes` e `Associacoes` estao visiveis no menu porque ja possuem integracao funcional com o backend atual
+- `Permissoes` continua fora do menu principal porque ainda nao existe contrato proprio suficiente para um modulo dedicado; a gestao de RBAC por cliente esta centralizada em `Usuarios`
+- `Composicoes` segue visivel e operacional com leitura, clonagem e manutencao de componentes em itens proprios do cliente
 
 ## 8. Modulos implementados
 
@@ -330,27 +331,24 @@ Backend consumido:
 
 ### 8.6 Composicoes
 
-Status: parcialmente ativo
+Status: ativo com escopo atual do backend
 
 Entrega:
 
 - listagem de servicos para selecao
 - visualizacao da explosao da composicao
 - custo total da composicao
+- clonagem de composicao para item proprio do cliente
+- inclusao de componentes em composicao propria
+- remocao de componentes em composicao propria
 
 Backend consumido:
 
 - `GET /api/v1/servicos/`
 - `GET /api/v1/servicos/{servico_id}/composicao`
-
-Observacao:
-
-- o modulo permanece visivel no menu principal com indicacao de somente visualizacao
-- cadastro por copia
-- inclusao de componentes
-- remocao de componentes
-
-continuam pendentes de endpoints oficiais.
+- `POST /api/v1/composicoes/clonar`
+- `POST /api/v1/composicoes/{pai_id}/componentes`
+- `DELETE /api/v1/composicoes/{pai_id}/componentes/{componente_id}`
 
 ### 8.7 Relatorios
 
@@ -395,16 +393,23 @@ Backend consumido:
 
 ### 8.10 Usuarios
 
-Status: parcial
+Status: ativo com escopo administrativo atual
 
 Entrega:
 
 - cadastro administrativo protegido de usuario
-- aviso de contratos ausentes para CRUD completo
+- listagem paginada
+- edicao de dados basicos
+- ativacao e inativacao
+- gestao de perfis por cliente
 
 Backend consumido:
 
 - `POST /api/v1/auth/usuarios`
+- `GET /api/v1/usuarios/`
+- `PATCH /api/v1/usuarios/{usuario_id}`
+- `GET /api/v1/usuarios/{usuario_id}/perfis-cliente`
+- `PUT /api/v1/usuarios/{usuario_id}/perfis-cliente`
 
 Observacao:
 
@@ -413,30 +418,46 @@ Observacao:
 
 ### 8.11 Clientes
 
-Status: preparado, sem integracao real
+Status: parcial com operacao real
 
-Motivo:
+Entrega:
 
-- backend ainda nao publica endpoints de CRUD de clientes
-- modulo removido do menu principal ate existir operacao real
+- listagem paginada
+- filtro por status
+- cadastro de cliente
+
+Backend consumido:
+
+- `GET /api/v1/clientes/`
+- `POST /api/v1/clientes/`
+
+Observacao:
+
+- o modulo permanece parcial porque o backend ainda nao publica edicao e ativacao/inativacao via `PATCH /clientes/{id}`
 
 ### 8.12 Permissoes
 
-Status: preparado, sem integracao real
+Status: parcial, centralizado em Usuarios
 
 Motivo:
 
-- backend ainda nao publica endpoints para manutencao dos vinculos de RBAC por cliente
-- modulo removido do menu principal ate existir operacao real
+- o backend ja publica manutencao de perfis por cliente, mas esse fluxo foi centralizado em `Usuarios`
+- a tela dedicada de `Permissoes` continua fora do menu principal ate existir um contrato proprio separado
 
 ### 8.13 Associacoes
 
-Status: preparado, sem integracao de leitura/exclusao
+Status: ativo com escopo atual do backend
 
-Motivo:
+Entrega:
 
-- backend atual possui criacao via busca, mas nao expoe listagem ou exclusao por endpoint
-- modulo removido do fluxo principal para nao induzir uso sem backend suficiente
+- listagem paginada por cliente
+- detalhe do servico relacionado
+- exclusao controlada
+
+Backend consumido:
+
+- `GET /api/v1/busca/associacoes`
+- `DELETE /api/v1/busca/associacoes/{associacao_id}`
 
 ## 9. Contratos tipados consumidos
 
@@ -445,6 +466,10 @@ Arquivos:
 - `frontend/src/shared/types/contracts/auth.ts`
 - `frontend/src/shared/types/contracts/busca.ts`
 - `frontend/src/shared/types/contracts/servicos.ts`
+- `frontend/src/shared/types/contracts/usuarios.ts`
+- `frontend/src/shared/types/contracts/clientes.ts`
+- `frontend/src/shared/types/contracts/associacoes.ts`
+- `frontend/src/shared/types/contracts/composicoes.ts`
 - `frontend/src/shared/types/contracts/homologacao.ts`
 - `frontend/src/shared/types/contracts/admin.ts`
 - `frontend/src/shared/types/contracts/common.ts`
@@ -550,6 +575,17 @@ sequenceDiagram
 | Homologacao | `homologationApi.ts` | `aprovar(payload)` | `/homologacao/aprovar` | POST | Aprovar ou reprovar item |
 | Homologacao | `homologationApi.ts` | `criarItemProprio(payload)` | `/homologacao/itens-proprios` | POST | Criar item proprio pendente |
 | Admin | `adminApi.ts` | `computeEmbeddings()` | `/admin/compute-embeddings` | POST | Disparar rotina administrativa |
+| Usuarios | `userApi.ts` | `list(params)` | `/usuarios/` | GET | Listar usuarios |
+| Usuarios | `userApi.ts` | `update(usuarioId, payload)` | `/usuarios/{id}` | PATCH | Atualizar usuario |
+| Usuarios | `userApi.ts` | `getPerfis(usuarioId)` | `/usuarios/{id}/perfis-cliente` | GET | Consultar perfis por cliente |
+| Usuarios | `userApi.ts` | `setPerfis(usuarioId, payload)` | `/usuarios/{id}/perfis-cliente` | PUT | Definir perfis por cliente |
+| Clientes | `clientsApi.ts` | `list(params)` | `/clientes/` | GET | Listar clientes |
+| Clientes | `clientsApi.ts` | `create(payload)` | `/clientes/` | POST | Cadastrar cliente |
+| Associacoes | `associationsApi.ts` | `list(params)` | `/busca/associacoes` | GET | Listar associacoes |
+| Associacoes | `associationsApi.ts` | `remove(id)` | `/busca/associacoes/{id}` | DELETE | Excluir associacao |
+| Composicoes | `composicoesApi.ts` | `clonar(payload)` | `/composicoes/clonar` | POST | Clonar composicao para item proprio |
+| Composicoes | `composicoesApi.ts` | `adicionarComponente(paiId, payload)` | `/composicoes/{pai_id}/componentes` | POST | Adicionar componente |
+| Composicoes | `composicoesApi.ts` | `removerComponente(paiId, componenteId)` | `/composicoes/{pai_id}/componentes/{componente_id}` | DELETE | Remover componente |
 
 ## 12. Mapa pagina -> funcao -> backend
 
@@ -592,6 +628,9 @@ sequenceDiagram
 - `CompositionsPage`
   - chama `servicesApi.list`
   - chama `servicesApi.getComposicao`
+  - chama `composicoesApi.clonar`
+  - chama `composicoesApi.adicionarComponente`
+  - chama `composicoesApi.removerComponente`
 
 ### Relatorios
 
@@ -615,6 +654,22 @@ sequenceDiagram
 - `UsersPage`
   - chama `userApi.create`
   - `userApi.create` delega para `authApi.createUsuario`
+  - chama `userApi.list`
+  - chama `userApi.update`
+  - chama `userApi.getPerfis`
+  - chama `userApi.setPerfis`
+
+### Clientes
+
+- `ClientsPage`
+  - chama `clientsApi.list`
+  - chama `clientsApi.create`
+
+### Associacoes
+
+- `AssociationsPage`
+  - chama `associationsApi.list`
+  - chama `associationsApi.remove`
 
 ## 13. Fluxo de refresh automatico
 
@@ -654,15 +709,13 @@ O que continua sendo responsabilidade real do backend:
 
 ## 15. Modulos preparados, mas dependentes de contrato
 
-Os seguintes modulos foram deixados com sinalizacao clara de contrato ausente:
+Os seguintes pontos continuam dependentes de contratos adicionais ou evolucoes de backend:
 
-- clientes
-- permissoes
-- associacoes
-- composicao por copia
-- CRUD completo de usuarios
+- edicao de clientes
+- modulo dedicado de permissoes
 - relatorios de outras tabelas
 - edicao de perfil
+- exclusao de usuarios, se fizer parte do produto
 
 Isso foi intencional para evitar:
 
@@ -673,34 +726,29 @@ Isso foi intencional para evitar:
 
 No menu principal:
 
-- `Clientes`, `Permissoes` e `Associacoes` sairam do fluxo principal
-- `Composicoes` segue visivel como modulo parcial de leitura
-- CRUDs administrativos completos continuam dependentes de contratos REST ainda nao publicados
+- `Clientes` e `Associacoes` retornaram ao fluxo principal por ja terem integracao real
+- `Permissoes` continua fora do menu porque o fluxo esta centralizado em `Usuarios`
+- `Clientes` permanece sinalizado como parcial ate existir edicao no backend
 
 ## 16. Gaps reais identificados no backend durante a implementacao
 
-### 16.1 Usuarios
+### 16.1 Clientes
 
-O frontend expoe criacao de usuario para administradores, porem o endpoint atual do backend:
+O frontend ja possui listagem e cadastro de clientes. O que continua faltando no backend e:
 
-- `POST /api/v1/auth/usuarios`
+- `PATCH /api/v1/clientes/{id}` para edicao e ativacao/inativacao
 
-nao mostra dependencia explicita de admin no codigo analisado.
+### 16.2 Perfil
 
-Consequencia:
+O frontend ja possui leitura do usuario autenticado. O que continua faltando no backend e:
 
-- a UI esta restrita a admin
-- a seguranca real precisa ser corrigida no backend
+- `PUT /api/v1/auth/me` ou `PATCH /api/v1/auth/me` para autoedicao de perfil
 
-### 16.2 CRUDs ainda nao expostos
+### 16.3 Relatorios
 
-Embora o dominio e alguns repositorios existam no backend, ainda nao ha rotas publicadas para:
+Os relatorios atuais reutilizam endpoints operacionais existentes. Continuam pendentes, se o produto exigir:
 
-- CRUD de clientes
-- manutencao de perfis por cliente
-- listagem/exclusao de associacoes
-- composicao por copia
-- relatorios amplos
+- endpoints dedicados de relatorio paginado por dominio
 
 ## 17. Como executar o frontend
 

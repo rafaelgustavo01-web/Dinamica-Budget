@@ -75,12 +75,12 @@ export function AdminPage() {
           </Typography>
           <Stack spacing={1}>
             <Typography variant="body2" color="text.secondary">
-              Gestão de usuários, clientes, permissões detalhadas e relatórios administrativos
-              ainda exigem novos endpoints.
+              Gestão de usuários e clientes já possui operação real no frontend
+              administrativo com os contratos hoje publicados.
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              O frontend já mantém essas áreas estruturadas, mas sem simular comportamento não
-              suportado pelo backend.
+              Continuam pendentes no backend: edição de clientes, autoedição de perfil,
+              relatórios dedicados e um fluxo próprio de permissões fora de Usuários.
             </Typography>
           </Stack>
         </Paper>

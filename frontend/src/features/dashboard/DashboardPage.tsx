@@ -71,7 +71,7 @@ export function DashboardPage() {
         />
         <EmptyState
           title="Selecione um cliente para começar"
-          description="As consultas operacionais deste backend exigem contexto de cliente. Use o seletor no topo para definir o escopo antes de navegar pelos módulos."
+          description="Esta visão operacional usa o cliente selecionado como contexto principal. Defina o escopo no topo antes de navegar pelos módulos."
         />
       </>
     );
@@ -130,8 +130,8 @@ export function DashboardPage() {
               Cliente ativo: {selectedClientId || 'Admin sem escopo de cliente'}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Módulos reais hoje: autenticação, serviços, busca, homologação, item próprio,
-              composição e administração.
+              Módulos operacionais já integrados: autenticação, serviços, busca,
+              associações, homologação, composições, usuários, clientes e administração.
             </Typography>
           </Stack>
         </Paper>
@@ -142,11 +142,12 @@ export function DashboardPage() {
           </Typography>
           <Stack spacing={1}>
             <Typography variant="body2" color="text.secondary">
-              CRUD completo de clientes e usuários ainda não está todo exposto pelo backend.
+              Clientes já possuem listagem e cadastro. Usuários já possuem criação,
+              listagem, edição, status e perfis por cliente.
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Associações, permissões detalhadas, relatórios amplos e composição por cópia
-              permanecem preparados no frontend, mas aguardam rotas oficiais.
+              Ainda dependem de contratos adicionais: edição de clientes, autoedição
+              de perfil, relatórios dedicados e um módulo separado de permissões.
             </Typography>
           </Stack>
         </Paper>
