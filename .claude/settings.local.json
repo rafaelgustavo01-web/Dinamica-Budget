@@ -63,7 +63,17 @@
       "Bash(PGPASSWORD=postgres \"C:/Program Files/PostgreSQL/16/bin/psql.exe\" -U postgres -d dinamica_budget -c \"SELECT typname FROM pg_type WHERE typtype=''''e'''';\")",
       "Bash(find \"C:/Users/rafae/Documents/workspace/Dinamica Budget/alembic\" -name \"*.pyc\" -delete)",
       "Bash(find \"C:/Users/rafae/Documents/workspace/Dinamica Budget/app/models\" -name \"*.pyc\" -delete)",
-      "Bash(PGPASSWORD=postgres \"C:/Program Files/PostgreSQL/16/bin/psql.exe\" -U postgres -d dinamica_budget -c \":*)"
+      "Bash(PGPASSWORD=postgres \"C:/Program Files/PostgreSQL/16/bin/psql.exe\" -U postgres -d dinamica_budget -c \":*)",
+      "Bash(PGPASSWORD=postgres \"C:/Program Files/PostgreSQL/16/bin/psql.exe\" -U postgres -c \"DROP DATABASE dinamica_budget; CREATE DATABASE dinamica_budget ENCODING ''UTF8'';\")",
+      "Bash(PGPASSWORD=postgres \"C:/Program Files/PostgreSQL/16/bin/psql.exe\" -U postgres -c \"DROP DATABASE dinamica_budget\")",
+      "Bash(PGPASSWORD=postgres \"C:/Program Files/PostgreSQL/16/bin/psql.exe\" -U postgres -c \"CREATE DATABASE dinamica_budget ENCODING ''UTF8''\")",
+      "Bash(.venvScriptspython.exe -m alembic current)",
+      "Bash(\".venv/Scripts/python.exe\" -m alembic current)",
+      "Bash(\".venv/Scripts/alembic.exe\" current:*)",
+      "Bash(\".venv/Scripts/python.exe\" -c \"import sqlalchemy; print\\(sqlalchemy.__version__\\)\")",
+      "Bash(\".venv/Scripts/alembic.exe\" downgrade:*)",
+      "Bash(\".venv/Scripts/python.exe\" -c \":*)",
+      "Read(//tmp/**)"
     ]
   }
 }

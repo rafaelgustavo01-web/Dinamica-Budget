@@ -1,14 +1,12 @@
 import asyncio
+import os
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import pool
+from sqlalchemy import MetaData, pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-# Import all models so Alembic can detect them
-from app.models import Base  # noqa: F401
-from app.models import *  # noqa: F401, F403
 from app.core.config import settings
 
 config = context.config
@@ -19,7 +17,24 @@ config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = Base.metadata
+# ── Model imports (autogenerate only) ────────────────────────────────────────
+# During `alembic upgrade`, importing ORM models registers SAEnum DDL event
+# listeners that fire when op.create_table() is called. Those listeners issue
+# raw CREATE TYPE statements that race with (and duplicate) the explicit
+# CREATE TYPE calls already present in each migration script.
+#
+# ORM metadata is only required for `alembic revision --autogenerate`.
+# Set ALEMBIC_AUTOGENERATE=1 in your shell before running autogenerate:
+#
+#   ALEMBIC_AUTOGENERATE=1 alembic revision --autogenerate -m "describe change"
+#
+if os.environ.get("ALEMBIC_AUTOGENERATE", "").lower() in ("1", "true", "yes"):
+    from app.models import Base  # noqa: F401
+    from app.models import *  # noqa: F401, F403
+    target_metadata = Base.metadata
+else:
+    # Empty metadata — sufficient for upgrade/downgrade; no DDL events registered.
+    target_metadata = MetaData()
 
 
 def run_migrations_offline() -> None:
@@ -36,13 +51,9 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    # NOTE: target_metadata is intentionally omitted here — it is only needed
-    # for `alembic revision --autogenerate`. Passing it during `upgrade`
-    # causes SQLAlchemy's metadata DDL events to fire CREATE TYPE statements
-    # for all ORM-registered enums, racing with the explicit CREATE TYPE calls
-    # already present in the migration scripts.
     context.configure(
         connection=connection,
+        target_metadata=target_metadata,
         compare_type=True,
     )
     with context.begin_transaction():

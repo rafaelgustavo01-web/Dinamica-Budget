@@ -28,17 +28,34 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     # ── New enums ─────────────────────────────────────────────────────────────
-    op.execute("CREATE TYPE origem_item_enum AS ENUM ('TCPO', 'PROPRIA')")
-    op.execute(
-        "CREATE TYPE status_homologacao_enum AS ENUM ('PENDENTE', 'APROVADO', 'REPROVADO')"
-    )
-    op.execute(
-        "CREATE TYPE status_validacao_associacao_enum "
-        "AS ENUM ('SUGERIDA', 'VALIDADA', 'CONSOLIDADA')"
-    )
-    op.execute(
-        "CREATE TYPE tipo_operacao_auditoria_enum AS ENUM ('CREATE', 'UPDATE', 'DELETE')"
-    )
+    # PL/pgSQL DO blocks make creation idempotent. SQLAlchemy DDL event
+    # listeners (fired when op.create_table is called) may race with the
+    # explicit CREATE TYPE statements here when ORM models are imported via
+    # env.py. The EXCEPTION clause absorbs the duplicate_object error cleanly.
+    op.execute("""
+        DO $$ BEGIN
+            CREATE TYPE origem_item_enum AS ENUM ('TCPO', 'PROPRIA');
+        EXCEPTION WHEN duplicate_object THEN NULL;
+        END $$;
+    """)
+    op.execute("""
+        DO $$ BEGIN
+            CREATE TYPE status_homologacao_enum AS ENUM ('PENDENTE', 'APROVADO', 'REPROVADO');
+        EXCEPTION WHEN duplicate_object THEN NULL;
+        END $$;
+    """)
+    op.execute("""
+        DO $$ BEGIN
+            CREATE TYPE status_validacao_associacao_enum AS ENUM ('SUGERIDA', 'VALIDADA', 'CONSOLIDADA');
+        EXCEPTION WHEN duplicate_object THEN NULL;
+        END $$;
+    """)
+    op.execute("""
+        DO $$ BEGIN
+            CREATE TYPE tipo_operacao_auditoria_enum AS ENUM ('CREATE', 'UPDATE', 'DELETE');
+        EXCEPTION WHEN duplicate_object THEN NULL;
+        END $$;
+    """)
 
     # ── usuarios: add external_id_ad ─────────────────────────────────────────
     op.add_column(
@@ -139,14 +156,18 @@ def upgrade() -> None:
         ),
         sa.Column(
             "origem_associacao",
-            sa.Enum("MANUAL_USUARIO", "IA_CONSOLIDADA", name="origem_associacao_enum", create_type=False),
+            # Use postgresql.ENUM (not sa.Enum) so create_type=False is preserved.
+            # sa.Enum.adapt_emulated_to_native() only propagates create_type when
+            # impl is already NativeForEmulated — sa.Enum is Emulated, so the flag
+            # is silently dropped and the adapted ENUM gets create_type=True.
+            postgresql.ENUM("MANUAL_USUARIO", "IA_CONSOLIDADA", name="origem_associacao_enum", create_type=False),
             nullable=False,
         ),
         sa.Column("confiabilidade_score", sa.Numeric(3, 2), nullable=True),
         sa.Column("frequencia_uso", sa.Integer, nullable=False, server_default="1"),
         sa.Column(
             "status_validacao",
-            sa.Enum(
+            postgresql.ENUM(
                 "SUGERIDA", "VALIDADA", "CONSOLIDADA",
                 name="status_validacao_associacao_enum",
                 create_type=False,
@@ -173,7 +194,7 @@ def upgrade() -> None:
         sa.Column("registro_id", sa.String(36), nullable=False),
         sa.Column(
             "operacao",
-            sa.Enum("CREATE", "UPDATE", "DELETE", name="tipo_operacao_auditoria_enum", create_type=False),
+            postgresql.ENUM("CREATE", "UPDATE", "DELETE", name="tipo_operacao_auditoria_enum", create_type=False),
             nullable=False,
         ),
         sa.Column("campo_alterado", sa.String(100), nullable=True),
