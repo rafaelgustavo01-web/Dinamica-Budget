@@ -30,7 +30,16 @@
       "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -m pip install sqlalchemy[asyncio] asyncpg alembic pgvector)",
       "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -c \"import secrets; print\\(secrets.token_hex\\(32\\)\\)\")",
       "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -m pip install email-validator)",
-      "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -c \"import email_validator; print\\(''ok''\\)\")"
+      "Bash(\"C:\\\\Users\\\\rafae\\\\Documents\\\\workspace\\\\Dinamica Budget\\\\.venv\\\\Scripts\\\\python.exe\" -c \"import email_validator; print\\(''ok''\\)\")",
+      "Bash(where pg_ctl)",
+      "Bash(where postgres:*)",
+      "Read(//c/Program Files/**)",
+      "Bash(where docker:*)",
+      "Bash(winget --version)",
+      "Bash(winget install:*)",
+      "Bash(tasklist)",
+      "Bash(taskkill /PID 33740 /F)",
+      "Bash(sc query:*)"
     ]
   }
 }

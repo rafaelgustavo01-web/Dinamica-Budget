@@ -1,0 +1,2896 @@
+#!/usr/bin/env python3
+"""Build the Dinâmica Budget Design System HTML page."""
+
+html = []
+
+# ===================== HEAD =====================
+html.append('''<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \\/ __ `__ \\/ __ \\/ / / / __/ _ \\/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\\____/\\____/_/ /_/ /_/ .___/\\__,_/\\__/\\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinâmica Budget — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+''')
+
+# ===================== CSS =====================
+html.append('''<style>
+/* ============================================
+   DINÂMICA BUDGET — DESIGN SYSTEM TOKENS
+   ============================================ */
+
+:root {
+  /* Primary Palette */
+  --navy-900: #0F1A2E;
+  --navy-800: #152238;
+  --navy-700: #1B2A4A;
+  --navy-600: #243660;
+  --navy-500: #2D4276;
+  --navy-400: #3D5A9E;
+  --navy-300: #6B83B8;
+  --navy-200: #9AADD3;
+  --navy-100: #C8D4EB;
+  --navy-50:  #E8EDF5;
+  --navy-25:  #F3F5FA;
+
+  /* Accent */
+  --gold-700: #B88A1B;
+  --gold-600: #D49B1F;
+  --gold-500: #E8A623;
+  --gold-400: #F0B942;
+  --gold-300: #F5CE72;
+  --gold-200: #F9DFA0;
+  --gold-100: #FDF0D0;
+  --gold-50:  #FEF8EB;
+
+  /* Neutral (blue-tinted grays) */
+  --gray-900: #1A1D24;
+  --gray-800: #2A2E37;
+  --gray-700: #3D4350;
+  --gray-600: #525A6A;
+  --gray-500: #6B7280;
+  --gray-400: #8B92A0;
+  --gray-300: #AEB4BF;
+  --gray-200: #D1D5DD;
+  --gray-100: #E8EAF0;
+  --gray-50:  #F4F5F7;
+  --gray-25:  #FAFBFC;
+
+  /* Semantic */
+  --success-700: #15803D;
+  --success-600: #16A34A;
+  --success-500: #22C55E;
+  --success-100: #DCFCE7;
+  --success-50:  #F0FDF4;
+
+  --error-700: #B91C1C;
+  --error-600: #DC2626;
+  --error-500: #EF4444;
+  --error-100: #FEE2E2;
+  --error-50:  #FEF2F2;
+
+  --warning-700: #C2410C;
+  --warning-600: #EA580C;
+  --warning-500: #F97316;
+  --warning-100: #FFEDD5;
+  --warning-50:  #FFF7ED;
+
+  --info-700: #0369A1;
+  --info-600: #0284C7;
+  --info-500: #0EA5E9;
+  --info-100: #E0F2FE;
+  --info-50:  #F0F9FF;
+
+  /* Typography */
+  --font-display: 'DM Sans', 'Segoe UI', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(27,42,74,0.06);
+  --shadow-md: 0 4px 12px rgba(27,42,74,0.08);
+  --shadow-lg: 0 12px 32px rgba(27,42,74,0.12);
+  --shadow-xl: 0 20px 48px rgba(27,42,74,0.16);
+
+  /* Transitions */
+  --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================
+   LIGHT THEME (default)
+   ============================================ */
+:root, [data-theme="light"] {
+  --bg: #FFFFFF;
+  --bg-alt: var(--gray-25);
+  --surface: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-hover: var(--gray-50);
+  --border: var(--gray-200);
+  --border-light: var(--gray-100);
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --text-tertiary: var(--gray-400);
+  --text-inverse: #FFFFFF;
+  --sidebar-bg: var(--navy-700);
+  --sidebar-text: rgba(255,255,255,0.8);
+  --sidebar-active: #FFFFFF;
+  --sidebar-hover: rgba(255,255,255,0.08);
+  --topbar-bg: #FFFFFF;
+  --topbar-border: var(--gray-200);
+}
+
+/* ============================================
+   DARK THEME
+   ============================================ */
+[data-theme="dark"] {
+  --bg: #0D1117;
+  --bg-alt: #161B22;
+  --surface: #161B22;
+  --surface-raised: #1C2333;
+  --surface-hover: #21283B;
+  --border: #30363D;
+  --border-light: #21283B;
+  --text-primary: #E6EDF3;
+  --text-secondary: #8B949E;
+  --text-tertiary: #6E7681;
+  --text-inverse: #0D1117;
+  --sidebar-bg: #0D1117;
+  --sidebar-text: rgba(230,237,243,0.7);
+  --sidebar-active: #E6EDF3;
+  --sidebar-hover: rgba(230,237,243,0.06);
+  --topbar-bg: #161B22;
+  --topbar-border: #30363D;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] .swatch-light { display: none; }
+[data-theme="dark"] .swatch-dark { display: flex !important; }
+[data-theme="light"] .swatch-dark { display: none !important; }
+
+/* ============================================
+   BASE RESET
+   ============================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg);
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+.ds-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.ds-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: var(--space-6) 0;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+[data-theme="dark"] .ds-sidebar {
+  border-right: 1px solid var(--border);
+}
+
+.ds-sidebar-logo {
+  padding: 0 var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.ds-sidebar-logo svg {
+  width: 180px;
+  height: auto;
+}
+
+.ds-sidebar-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.35);
+  padding: var(--space-4) var(--space-6) var(--space-2);
+}
+
+[data-theme="dark"] .ds-sidebar-label {
+  color: var(--text-tertiary);
+}
+
+.ds-sidebar-nav { flex: 1; }
+
+.ds-sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-6);
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all var(--transition);
+}
+
+.ds-sidebar-nav a:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-active);
+}
+
+.ds-sidebar-nav a.active {
+  color: var(--sidebar-active);
+  background: rgba(255,255,255,0.06);
+  border-left-color: var(--gold-500);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .ds-sidebar-nav a.active {
+  background: rgba(232,166,35,0.08);
+  border-left-color: var(--gold-500);
+}
+
+.ds-sidebar-nav a svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.ds-sidebar-nav a.active svg { opacity: 1; }
+
+.ds-main {
+  margin-left: 260px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ds-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--topbar-border);
+  padding: 0 var(--space-8);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(12px);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.ds-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ds-topbar-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ds-topbar-badge {
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--gold-100);
+  color: var(--gold-700);
+  padding: 2px 10px;
+  border-radius: 100px;
+}
+
+[data-theme="dark"] .ds-topbar-badge {
+  background: rgba(232,166,35,0.15);
+  color: var(--gold-400);
+}
+
+.ds-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ds-theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--text-secondary);
+  transition: all var(--transition);
+}
+
+.ds-theme-toggle:hover {
+  border-color: var(--navy-300);
+  color: var(--navy-700);
+}
+
+[data-theme="dark"] .ds-theme-toggle:hover {
+  border-color: var(--gold-500);
+  color: var(--gold-400);
+}
+
+.ds-content {
+  padding: var(--space-10) var(--space-8) var(--space-16);
+  max-width: 1200px;
+}
+
+/* ============================================
+   SECTIONS
+   ============================================ */
+.ds-section {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.ds-section.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ds-section-header {
+  margin-bottom: var(--space-10);
+  padding-bottom: var(--space-6);
+  border-bottom: 2px solid var(--border-light);
+}
+
+.ds-section-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.ds-section-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 600px;
+}
+
+.ds-subsection {
+  margin-bottom: var(--space-12);
+}
+
+.ds-subsection-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ds-subsection-title::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--gold-500);
+  border-radius: 2px;
+}
+
+.ds-subsection-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+/* ============================================
+   COLOR SWATCHES
+   ============================================ */
+.ds-color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-4);
+}
+
+.ds-swatch {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  background: var(--surface);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.ds-swatch:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.ds-swatch-color {
+  height: 80px;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-2);
+}
+
+.ds-swatch-info {
+  padding: var(--space-3);
+}
+
+.ds-swatch-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.ds-swatch-hex {
+  font-size: 12px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--text-secondary);
+}
+
+.ds-swatch-usage {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* ============================================
+   MODE COMPARISON
+   ============================================ */
+.ds-mode-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.ds-mode-panel {
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  border: 1px solid;
+}
+
+.ds-mode-panel.light {
+  background: #FFFFFF;
+  border-color: #E8EAF0;
+  color: #1A1D24;
+}
+
+.ds-mode-panel.dark {
+  background: #0D1117;
+  border-color: #30363D;
+  color: #E6EDF3;
+}
+
+.ds-mode-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--space-4);
+  opacity: 0.6;
+}
+
+.ds-mode-sample {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.ds-mode-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ds-mode-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  border: 1px solid rgba(128,128,128,0.15);
+}
+
+.ds-mode-text {
+  font-size: 13px;
+}
+
+.ds-mode-text span {
+  font-family: 'SF Mono', monospace;
+  font-size: 11px;
+  opacity: 0.6;
+  margin-left: var(--space-2);
+}
+
+/* ============================================
+   TYPOGRAPHY SPECIMENS
+   ============================================ */
+.ds-type-specimen {
+  margin-bottom: var(--space-6);
+  padding: var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.ds-type-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.ds-type-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--navy-700);
+  background: var(--navy-50);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+[data-theme="dark"] .ds-type-label {
+  background: rgba(27,42,74,0.4);
+  color: var(--navy-200);
+}
+
+.ds-type-specs {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-family: 'SF Mono', monospace;
+}
+
+/* ============================================
+   COMPONENT SHOWCASE
+   ============================================ */
+.ds-showcase {
+  background: var(--bg-alt);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  margin-bottom: var(--space-6);
+}
+
+.ds-showcase-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.ds-showcase-row:last-child { margin-bottom: 0; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 10px 24px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--navy-700);
+  color: #FFFFFF;
+}
+.btn-primary:hover {
+  background: var(--navy-800);
+  box-shadow: 0 4px 12px rgba(27,42,74,0.25);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--navy-700);
+  border-color: var(--navy-300);
+}
+.btn-secondary:hover {
+  border-color: var(--navy-700);
+  background: var(--navy-50);
+}
+[data-theme="dark"] .btn-secondary {
+  color: var(--navy-200);
+  border-color: var(--navy-400);
+}
+[data-theme="dark"] .btn-secondary:hover {
+  background: rgba(27,42,74,0.3);
+  border-color: var(--navy-200);
+}
+
+.btn-accent {
+  background: var(--gold-500);
+  color: var(--navy-900);
+}
+.btn-accent:hover {
+  background: var(--gold-400);
+  box-shadow: 0 4px 12px rgba(232,166,35,0.3);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.btn-ghost:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.btn-danger {
+  background: var(--error-600);
+  color: #FFFFFF;
+}
+.btn-danger:hover {
+  background: var(--error-700);
+}
+
+.btn:disabled, .btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-sm {
+  padding: 6px 16px;
+  font-size: 13px;
+}
+
+.btn-lg {
+  padding: 14px 32px;
+  font-size: 16px;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: var(--radius-md);
+}
+
+/* Cards */
+.ds-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.ds-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.ds-card-header {
+  padding: var(--space-4) var(--space-5);
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.ds-card-header.navy {
+  background: var(--navy-700);
+  color: #FFFFFF;
+  border-bottom-color: var(--navy-800);
+}
+
+.ds-card-header.gold {
+  background: var(--gold-500);
+  color: var(--navy-900);
+}
+
+.ds-card-body {
+  padding: var(--space-5);
+}
+
+.ds-card-footer {
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--border-light);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* KPI Card */
+.ds-kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  min-width: 200px;
+  transition: box-shadow var(--transition);
+}
+
+.ds-kpi-card:hover { box-shadow: var(--shadow-md); }
+
+.ds-kpi-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.ds-kpi-value {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-kpi-delta {
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ds-kpi-delta.up { color: var(--success-600); }
+.ds-kpi-delta.down { color: var(--error-600); }
+
+/* Inputs */
+.ds-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 280px;
+}
+
+.ds-input-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ds-input-label .required {
+  color: var(--error-500);
+  margin-left: 2px;
+}
+
+.ds-input {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: var(--font-body);
+  background: var(--surface);
+  color: var(--text-primary);
+  transition: all var(--transition);
+  outline: none;
+}
+
+.ds-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.ds-input:focus {
+  border-color: var(--navy-500);
+  box-shadow: 0 0 0 3px rgba(27,42,74,0.12);
+}
+
+.ds-input.error {
+  border-color: var(--error-500);
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+}
+
+.ds-input:disabled {
+  background: var(--gray-50);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .ds-input:disabled {
+  background: var(--surface-hover);
+}
+
+.ds-input-helper {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.ds-input-helper.error {
+  color: var(--error-500);
+}
+
+/* Select */
+.ds-select {
+  appearance: none;
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+/* Table */
+.ds-table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.ds-table thead {
+  background: var(--navy-700);
+  color: #FFFFFF;
+}
+
+[data-theme="dark"] .ds-table thead {
+  background: var(--navy-800);
+}
+
+.ds-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.ds-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.ds-table tbody tr:nth-child(even) {
+  background: var(--bg-alt);
+}
+
+.ds-table tbody tr:hover {
+  background: var(--navy-25);
+}
+
+[data-theme="dark"] .ds-table tbody tr:hover {
+  background: var(--surface-hover);
+}
+
+.ds-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Chips */
+.ds-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ds-chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.chip-approved { background: var(--success-100); color: var(--success-700); }
+.chip-approved .ds-chip-dot { background: var(--success-600); }
+
+.chip-pending { background: var(--gold-100); color: var(--gold-700); }
+.chip-pending .ds-chip-dot { background: var(--gold-500); }
+
+.chip-rejected { background: var(--error-100); color: var(--error-700); }
+.chip-rejected .ds-chip-dot { background: var(--error-500); }
+
+.chip-tcpo { background: var(--info-100); color: var(--info-700); }
+.chip-tcpo .ds-chip-dot { background: var(--info-500); }
+
+.chip-propria { background: #F3E8FF; color: #6B21A8; }
+.chip-propria .ds-chip-dot { background: #9333EA; }
+
+[data-theme="dark"] .chip-approved { background: rgba(34,197,94,0.12); color: #4ADE80; }
+[data-theme="dark"] .chip-pending { background: rgba(232,166,35,0.12); color: var(--gold-300); }
+[data-theme="dark"] .chip-rejected { background: rgba(239,68,68,0.12); color: #FCA5A5; }
+[data-theme="dark"] .chip-tcpo { background: rgba(14,165,233,0.12); color: #7DD3FC; }
+[data-theme="dark"] .chip-propria { background: rgba(147,51,234,0.12); color: #C084FC; }
+
+/* Modal / Dialog */
+.ds-dialog-overlay {
+  position: relative;
+  background: rgba(15,26,46,0.4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+}
+
+[data-theme="dark"] .ds-dialog-overlay {
+  background: rgba(0,0,0,0.5);
+}
+
+.ds-dialog {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+}
+
+.ds-dialog-header {
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.ds-dialog-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ds-dialog-close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all var(--transition);
+}
+
+.ds-dialog-close:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.ds-dialog-body {
+  padding: var(--space-6);
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.ds-dialog-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.ds-dialog-icon.warning {
+  background: var(--warning-100);
+  color: var(--warning-600);
+}
+
+[data-theme="dark"] .ds-dialog-icon.warning {
+  background: rgba(249,115,22,0.15);
+}
+
+.ds-dialog-footer {
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  border-top: 1px solid var(--border-light);
+}
+
+/* Alerts */
+.ds-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  border: 1px solid;
+}
+
+.ds-alert-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ds-alert-content { flex: 1; }
+.ds-alert-title { font-weight: 600; margin-bottom: 2px; }
+.ds-alert-message { font-size: 13px; opacity: 0.85; }
+
+.alert-success {
+  background: var(--success-50);
+  border-color: var(--success-500);
+  color: var(--success-700);
+}
+.alert-error {
+  background: var(--error-50);
+  border-color: var(--error-500);
+  color: var(--error-700);
+}
+.alert-warning {
+  background: var(--warning-50);
+  border-color: var(--warning-500);
+  color: var(--warning-700);
+}
+.alert-info {
+  background: var(--info-50);
+  border-color: var(--info-500);
+  color: var(--info-700);
+}
+
+[data-theme="dark"] .alert-success { background: rgba(34,197,94,0.08); color: #86EFAC; }
+[data-theme="dark"] .alert-error { background: rgba(239,68,68,0.08); color: #FCA5A5; }
+[data-theme="dark"] .alert-warning { background: rgba(249,115,22,0.08); color: #FDBA74; }
+[data-theme="dark"] .alert-info { background: rgba(14,165,233,0.08); color: #7DD3FC; }
+
+/* Empty State */
+.ds-empty {
+  text-align: center;
+  padding: var(--space-12) var(--space-8);
+}
+
+.ds-empty-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--space-5);
+  border-radius: 50%;
+  background: var(--navy-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy-300);
+}
+
+[data-theme="dark"] .ds-empty-icon {
+  background: rgba(27,42,74,0.3);
+  color: var(--navy-400);
+}
+
+.ds-empty-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.ds-empty-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Skeleton */
+.ds-skeleton {
+  background: var(--gray-100);
+  border-radius: var(--radius-md);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+[data-theme="dark"] .ds-skeleton {
+  background: var(--surface-hover);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.ds-skeleton-circle {
+  border-radius: 50%;
+}
+
+/* Spinner */
+.ds-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--navy-700);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+[data-theme="dark"] .ds-spinner {
+  border-color: var(--border);
+  border-top-color: var(--gold-400);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   LAYOUT PREVIEWS (WIREFRAMES)
+   ============================================ */
+.ds-wireframe {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-alt);
+  margin-bottom: var(--space-6);
+}
+
+.ds-wireframe-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-light);
+  padding: var(--space-3) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.ds-wireframe-body {
+  padding: var(--space-5);
+}
+
+.ds-wireframe-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.ds-wireframe-kpi {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.ds-wireframe-kpi-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-1);
+}
+
+.ds-wireframe-kpi-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-wireframe-chart {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  height: 240px;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-5);
+  gap: var(--space-3);
+  position: relative;
+}
+
+.ds-wireframe-chart-title {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-5);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ds-wireframe-bar {
+  flex: 1;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  min-height: 20px;
+  transition: opacity var(--transition);
+}
+
+.ds-wireframe-bar:hover { opacity: 0.8; }
+
+/* Search/Filter layout */
+.ds-wireframe-search-bar {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.ds-wireframe-search-bar .ds-input {
+  flex: 1;
+  min-width: 250px;
+}
+
+/* ============================================
+   SIDEBAR MOCKUP (in components)
+   ============================================ */
+.ds-sidebar-mockup {
+  width: 260px;
+  background: var(--navy-700);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) 0;
+  color: rgba(255,255,255,0.7);
+  overflow: hidden;
+}
+
+.ds-sidebar-mockup-logo {
+  padding: 0 var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.ds-sidebar-mockup-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-5);
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  cursor: default;
+}
+
+.ds-sidebar-mockup-item.active {
+  color: #FFFFFF;
+  background: rgba(255,255,255,0.06);
+  border-left-color: var(--gold-500);
+  font-weight: 600;
+}
+
+.ds-sidebar-mockup-item svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.6;
+}
+
+.ds-sidebar-mockup-item.active svg { opacity: 1; }
+
+/* Topbar mockup */
+.ds-topbar-mockup {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 0 var(--space-5);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ds-topbar-mockup-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ds-topbar-mockup-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ds-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--navy-700);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ds-client-select {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  background: var(--surface);
+}
+
+/* ============================================
+   ICONS & DECORATIVE ELEMENTS
+   ============================================ */
+.ds-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--space-4);
+}
+
+.ds-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: all var(--transition);
+}
+
+.ds-icon-item:hover {
+  border-color: var(--navy-300);
+  box-shadow: var(--shadow-sm);
+}
+
+.ds-icon-item svg {
+  width: 24px;
+  height: 24px;
+  color: var(--navy-700);
+}
+
+[data-theme="dark"] .ds-icon-item svg {
+  color: var(--navy-200);
+}
+
+.ds-icon-item span {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Spacing demo */
+.ds-spacing-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.ds-spacing-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ds-spacing-bar {
+  height: 24px;
+  background: var(--navy-100);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+
+[data-theme="dark"] .ds-spacing-bar {
+  background: rgba(27,42,74,0.4);
+}
+
+.ds-spacing-label {
+  font-size: 12px;
+  font-family: 'SF Mono', monospace;
+  color: var(--text-secondary);
+  min-width: 120px;
+}
+
+/* Chevron decorative */
+.ds-chevron-demo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  background: var(--navy-700);
+  border-radius: var(--radius-lg);
+  color: #FFFFFF;
+}
+
+.ds-chevron-demo-text {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+/* Grid demo */
+.ds-grid-demo {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-2);
+}
+
+.ds-grid-col {
+  height: 48px;
+  background: var(--navy-100);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--navy-500);
+}
+
+[data-theme="dark"] .ds-grid-col {
+  background: rgba(27,42,74,0.3);
+  color: var(--navy-300);
+}
+
+/* Homologation item */
+.ds-homolog-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  gap: var(--space-4);
+}
+
+.ds-homolog-info { flex: 1; min-width: 0; }
+
+.ds-homolog-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.ds-homolog-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.ds-homolog-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* Footer */
+.ds-footer {
+  margin-left: 260px;
+  padding: var(--space-8);
+  border-top: 1px solid var(--border-light);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.ds-footer a {
+  color: var(--text-tertiary);
+  text-decoration: none;
+}
+
+.ds-footer a:hover {
+  color: var(--text-secondary);
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .ds-sidebar { display: none; }
+  .ds-main { margin-left: 0; }
+  .ds-footer { margin-left: 0; }
+  .ds-mode-compare { grid-template-columns: 1fr; }
+  .ds-wireframe-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+''')
+
+# ===================== BODY START =====================
+html.append('''</head>
+<body>
+<div class="ds-layout">
+''')
+
+# ===================== SIDEBAR =====================
+html.append('''
+<!-- SIDEBAR -->
+<aside class="ds-sidebar">
+  <div class="ds-sidebar-logo">
+    <svg viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Chevrons -->
+      <polygon points="4,25 18,8 18,16 10,25 18,34 18,42" fill="#E8A623"/>
+      <polygon points="12,25 26,8 26,16 18,25 26,34 26,42" fill="#FFFFFF"/>
+      <!-- Text -->
+      <text x="35" y="18" font-family="DM Sans, sans-serif" font-size="8" font-weight="600" letter-spacing="2.5" fill="rgba(255,255,255,0.6)">CONSTRUTORA</text>
+      <text x="35" y="38" font-family="DM Sans, sans-serif" font-size="18" font-weight="700" letter-spacing="1.5" fill="#FFFFFF">DINÂMICA</text>
+    </svg>
+  </div>
+
+  <div class="ds-sidebar-label">Design System</div>
+
+  <nav class="ds-sidebar-nav">
+    <a href="#cores" class="active" data-section="cores">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20 7 7 0 0 1 0-14 3 3 0 0 1 0 6"/></svg>
+      Cores
+    </a>
+    <a href="#tipografia" data-section="tipografia">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+      Tipografia
+    </a>
+    <a href="#componentes" data-section="componentes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Componentes
+    </a>
+    <a href="#layouts" data-section="layouts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      Layouts
+    </a>
+    <a href="#icones" data-section="icones">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+      Ícones e Elementos
+    </a>
+  </nav>
+
+  <div style="padding: var(--space-4) var(--space-6); font-size: 11px; color: rgba(255,255,255,0.3); border-top: 1px solid rgba(255,255,255,0.06); margin-top: auto;">
+    Dinâmica Budget v1.0<br>
+    Design System — Mar 2026
+  </div>
+</aside>
+''')
+
+# ===================== MAIN =====================
+html.append('''
+<!-- MAIN CONTENT -->
+<main class="ds-main">
+
+  <!-- TOPBAR -->
+  <header class="ds-topbar">
+    <div class="ds-topbar-left">
+      <span class="ds-topbar-title">Design System</span>
+      <span class="ds-topbar-badge">v1.0</span>
+    </div>
+    <div class="ds-topbar-right">
+      <button class="ds-theme-toggle" data-theme-toggle aria-label="Alternar tema">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="ds-content">
+''')
+
+# ===================== SECTION: CORES =====================
+html.append('''
+<!-- ================================ CORES ================================ -->
+<section class="ds-section active" id="cores">
+  <div class="ds-section-header">
+    <h1 class="ds-section-title">Cores</h1>
+    <p class="ds-section-desc">Paleta de cores da marca Dinâmica Budget. Azul marinho como cor dominante, amarelo dourado como accent pontual, e neutros derivados do azul.</p>
+  </div>
+
+  <!-- Primary & Accent -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Primária e Accent</h2>
+    <p class="ds-subsection-desc">Azul marinho para elementos principais. Amarelo dourado para destaques e CTAs secundários.</p>
+    <div class="ds-color-grid">
+      <div class="ds-swatch">
+        <div class="ds-swatch-color" style="background:#0F1A2E;"></div>
+        <div class="ds-swatch-info"><div class="ds-swatch-name">Navy 900</div><div class="ds-swatch-hex">#0F1A2E</div><div class="ds-swatch-usage">Textos sobre fundo claro</div></div>
+      </div>
+      <div class="ds-swatch">
+        <div class="ds-swatch-color" style="background:#1B2A4A;"></div>
+        <div class="ds-swatch-info"><div class="ds-swatch-name">Navy 700 — Primary</div><div class="ds-swatch-hex">#1B2A4A</div><div class="ds-swatch-usage">Botões, sidebar, header</div></div>
+      </div>
+      <div class="ds-swatch">
+        <div class="ds-swatch-color" style="background:#243660;"></div>
+        <div class="ds-swatch-info"><div class="ds-swatch-name">Navy 600</div><div class="ds-swatch-hex">#243660</div><div class="ds-swatch-usage">Hover de botão primary</div></div>
+      </div>
+      <div class="ds-swatch">
+        <div class="ds-swatch-color" style="background:#3D5A9E;"></div>
+        <div class="ds-swatch-info"><div class="ds-swatch-name">Navy 400</div><div class="ds-swatch-hex">#3D5A9E</div><div class="ds-swatch-usage">Links, ícones ativos</div></div>
+      </div>
+      <div class="ds-swatch">
+        <div class="ds-swatch-color" style="background:#9AADD3;"></div>
+        <div class="ds-swatch-info"><div class="ds-swatch-name">Navy 200</div><div class="ds-swatch-hex">#9AADD3</div><div class="ds-swatch-usage">Bordas, outlines</div></div>
+      </div>
+      <div class="ds-swatch">
+        <div class="ds-swatch-color" style="background:#E8EDF5;"></div>
+        <div class="ds-swatch-info"><div class="ds-swatch-name">Navy 50</div><div class="ds-swatch-hex">#E8EDF5</div><div class="ds-swatch-usage">Background tinted</div></div>
+      </div>
+      <div class="ds-swatch">
+        <div class="ds-swatch-color" style="background:#E8A623;"></div>
+        <div class="ds-swatch-info"><div class="ds-swatch-name">Gold 500 — Accent</div><div class="ds-swatch-hex">#E8A623</div><div class="ds-swatch-usage">CTA secundário, badges</div></div>
+      </div>
+      <div class="ds-swatch">
+        <div class="ds-swatch-color" style="background:#F0B942;"></div>
+        <div class="ds-swatch-info"><div class="ds-swatch-name">Gold 400</div><div class="ds-swatch-hex">#F0B942</div><div class="ds-swatch-usage">Hover de accent</div></div>
+      </div>
+      <div class="ds-swatch">
+        <div class="ds-swatch-color" style="background:#FEF8EB;"></div>
+        <div class="ds-swatch-info"><div class="ds-swatch-name">Gold 50</div><div class="ds-swatch-hex">#FEF8EB</div><div class="ds-swatch-usage">Background accent</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Neutros -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Neutros</h2>
+    <p class="ds-subsection-desc">Cinzas com leve tint azulado para manter coesão com o azul marinho.</p>
+    <div class="ds-color-grid">
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#1A1D24;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Gray 900</div><div class="ds-swatch-hex">#1A1D24</div><div class="ds-swatch-usage">Texto primary</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#3D4350;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Gray 700</div><div class="ds-swatch-hex">#3D4350</div><div class="ds-swatch-usage">Texto body</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#6B7280;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Gray 500</div><div class="ds-swatch-hex">#6B7280</div><div class="ds-swatch-usage">Texto secondary</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#AEB4BF;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Gray 300</div><div class="ds-swatch-hex">#AEB4BF</div><div class="ds-swatch-usage">Placeholder, disabled</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#D1D5DD;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Gray 200</div><div class="ds-swatch-hex">#D1D5DD</div><div class="ds-swatch-usage">Bordas</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#F4F5F7;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Gray 50</div><div class="ds-swatch-hex">#F4F5F7</div><div class="ds-swatch-usage">Background alternado</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#FAFBFC; border: 1px solid #E8EAF0;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Gray 25</div><div class="ds-swatch-hex">#FAFBFC</div><div class="ds-swatch-usage">Surface sutil</div></div></div>
+    </div>
+  </div>
+
+  <!-- Semânticas -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Cores Semânticas</h2>
+    <p class="ds-subsection-desc">Cores para feedback e estados do sistema.</p>
+    <div class="ds-color-grid">
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#16A34A;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Success</div><div class="ds-swatch-hex">#16A34A</div><div class="ds-swatch-usage">Aprovado, concluído</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#DCFCE7;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Success Light</div><div class="ds-swatch-hex">#DCFCE7</div><div class="ds-swatch-usage">Background success</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#DC2626;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Error</div><div class="ds-swatch-hex">#DC2626</div><div class="ds-swatch-usage">Erro, reprovado</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#FEE2E2;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Error Light</div><div class="ds-swatch-hex">#FEE2E2</div><div class="ds-swatch-usage">Background error</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#EA580C;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Warning</div><div class="ds-swatch-hex">#EA580C</div><div class="ds-swatch-usage">Atenção, pendência</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#FFEDD5;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Warning Light</div><div class="ds-swatch-hex">#FFEDD5</div><div class="ds-swatch-usage">Background warning</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#0284C7;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Info</div><div class="ds-swatch-hex">#0284C7</div><div class="ds-swatch-usage">Informação, dica</div></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#E0F2FE;"></div><div class="ds-swatch-info"><div class="ds-swatch-name">Info Light</div><div class="ds-swatch-hex">#E0F2FE</div><div class="ds-swatch-usage">Background info</div></div></div>
+    </div>
+  </div>
+
+  <!-- Light / Dark Comparison -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Light Mode vs Dark Mode</h2>
+    <p class="ds-subsection-desc">Comparação de tokens de superfície, texto e accent entre os dois modos.</p>
+    <div class="ds-mode-compare">
+      <!-- Light -->
+      <div class="ds-mode-panel light">
+        <div class="ds-mode-label">☀ Light Mode</div>
+        <div class="ds-mode-sample">
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#FFFFFF; border: 1px solid #D1D5DD;"></div><div class="ds-mode-text">Background <span>#FFFFFF</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#F4F5F7;"></div><div class="ds-mode-text">Surface Alt <span>#F4F5F7</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#D1D5DD;"></div><div class="ds-mode-text">Border <span>#D1D5DD</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#1A1D24;"></div><div class="ds-mode-text" style="color:#1A1D24;">Text Primary <span>#1A1D24</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#6B7280;"></div><div class="ds-mode-text" style="color:#6B7280;">Text Secondary <span>#6B7280</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#1B2A4A;"></div><div class="ds-mode-text" style="color:#1B2A4A; font-weight:600;">Navy Primary <span>#1B2A4A</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#E8A623;"></div><div class="ds-mode-text" style="color:#B88A1B; font-weight:600;">Gold Accent <span>#E8A623</span></div></div>
+        </div>
+      </div>
+      <!-- Dark -->
+      <div class="ds-mode-panel dark">
+        <div class="ds-mode-label">🌙 Dark Mode</div>
+        <div class="ds-mode-sample">
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#0D1117;"></div><div class="ds-mode-text" style="color:#E6EDF3;">Background <span style="color:#8B949E;">#0D1117</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#161B22;"></div><div class="ds-mode-text" style="color:#E6EDF3;">Surface Alt <span style="color:#8B949E;">#161B22</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#30363D;"></div><div class="ds-mode-text" style="color:#E6EDF3;">Border <span style="color:#8B949E;">#30363D</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#E6EDF3;"></div><div class="ds-mode-text" style="color:#E6EDF3;">Text Primary <span style="color:#8B949E;">#E6EDF3</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#8B949E;"></div><div class="ds-mode-text" style="color:#8B949E;">Text Secondary <span>#8B949E</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#6B83B8;"></div><div class="ds-mode-text" style="color:#6B83B8; font-weight:600;">Navy Primary <span style="color:#8B949E;">#6B83B8</span></div></div>
+          <div class="ds-mode-row"><div class="ds-mode-dot" style="background:#F0B942;"></div><div class="ds-mode-text" style="color:#F0B942; font-weight:600;">Gold Accent <span style="color:#8B949E;">#F0B942</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+''')
+
+# ===================== SECTION: TIPOGRAFIA =====================
+html.append('''
+<!-- ================================ TIPOGRAFIA ================================ -->
+<section class="ds-section" id="tipografia">
+  <div class="ds-section-header">
+    <h1 class="ds-section-title">Tipografia</h1>
+    <p class="ds-section-desc">DM Sans para headings (personalidade, confiança) e Inter para body (legibilidade, precisão). Combinação profissional para o contexto de engenharia.</p>
+  </div>
+
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Fontes</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-6); margin-bottom:var(--space-8);">
+      <div style="padding:var(--space-6); border:1px solid var(--border-light); border-radius:var(--radius-lg); background:var(--surface);">
+        <div style="font-family:var(--font-display); font-size:36px; font-weight:700; margin-bottom:var(--space-3); color:var(--text-primary);">DM Sans</div>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:var(--space-4);">Headings · Títulos · KPIs · Display</div>
+        <div style="font-family:var(--font-display); font-size:16px; color:var(--text-primary);">
+          <div style="font-weight:400;">Regular 400 — Orçamentação inteligente</div>
+          <div style="font-weight:500;">Medium 500 — Orçamentação inteligente</div>
+          <div style="font-weight:600;">SemiBold 600 — Orçamentação inteligente</div>
+          <div style="font-weight:700;">Bold 700 — Orçamentação inteligente</div>
+        </div>
+      </div>
+      <div style="padding:var(--space-6); border:1px solid var(--border-light); border-radius:var(--radius-lg); background:var(--surface);">
+        <div style="font-family:var(--font-body); font-size:36px; font-weight:400; margin-bottom:var(--space-3); color:var(--text-primary);">Inter</div>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:var(--space-4);">Body · Parágrafos · Labels · UI</div>
+        <div style="font-family:var(--font-body); font-size:16px; color:var(--text-primary);">
+          <div style="font-weight:300;">Light 300 — Gestão de orçamentos</div>
+          <div style="font-weight:400;">Regular 400 — Gestão de orçamentos</div>
+          <div style="font-weight:500;">Medium 500 — Gestão de orçamentos</div>
+          <div style="font-weight:600;">SemiBold 600 — Gestão de orçamentos</div>
+          <div style="font-weight:700;">Bold 700 — Gestão de orçamentos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Escala Tipográfica</h2>
+    <p class="ds-subsection-desc">Sistema de tamanhos baseado na função de cada elemento de UI.</p>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">H1</span>
+        <span class="ds-type-specs">DM Sans · Bold 700 · 28px · line-height 1.15</span>
+      </div>
+      <div style="font-family:var(--font-display); font-size:28px; font-weight:700; line-height:1.15; color:var(--text-primary);">Dashboard de Orçamentos</div>
+    </div>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">H2</span>
+        <span class="ds-type-specs">DM Sans · Bold 700 · 22px · line-height 1.2</span>
+      </div>
+      <div style="font-family:var(--font-display); font-size:22px; font-weight:700; line-height:1.2; color:var(--text-primary);">Serviços Cadastrados</div>
+    </div>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">H3</span>
+        <span class="ds-type-specs">DM Sans · SemiBold 600 · 18px · line-height 1.25</span>
+      </div>
+      <div style="font-family:var(--font-display); font-size:18px; font-weight:600; line-height:1.25; color:var(--text-primary);">Composição de Custos</div>
+    </div>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">H4</span>
+        <span class="ds-type-specs">DM Sans · SemiBold 600 · 16px · line-height 1.3</span>
+      </div>
+      <div style="font-family:var(--font-display); font-size:16px; font-weight:600; line-height:1.3; color:var(--text-primary);">Mão de Obra Qualificada</div>
+    </div>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">H5</span>
+        <span class="ds-type-specs">Inter · SemiBold 600 · 14px · line-height 1.4</span>
+      </div>
+      <div style="font-family:var(--font-body); font-size:14px; font-weight:600; line-height:1.4; color:var(--text-primary);">Detalhes do Insumo</div>
+    </div>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">H6</span>
+        <span class="ds-type-specs">Inter · SemiBold 600 · 12px · line-height 1.4 · uppercase</span>
+      </div>
+      <div style="font-family:var(--font-body); font-size:12px; font-weight:600; line-height:1.4; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-secondary);">Categoria</div>
+    </div>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">Body</span>
+        <span class="ds-type-specs">Inter · Regular 400 · 15px · line-height 1.6</span>
+      </div>
+      <div style="font-family:var(--font-body); font-size:15px; font-weight:400; line-height:1.6; color:var(--text-primary); max-width:600px;">
+        O Dinâmica Budget permite gerenciar orçamentos de construção civil com precisão, utilizando referências de preços TCPO e composições próprias da construtora.
+      </div>
+    </div>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">Body Small</span>
+        <span class="ds-type-specs">Inter · Regular 400 · 13px · line-height 1.5</span>
+      </div>
+      <div style="font-family:var(--font-body); font-size:13px; font-weight:400; line-height:1.5; color:var(--text-secondary);">
+        Última atualização: 26 de março de 2026 às 14:32. Serviço cadastrado por Rafael Sullivan.
+      </div>
+    </div>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">Caption</span>
+        <span class="ds-type-specs">Inter · Medium 500 · 11px · line-height 1.4</span>
+      </div>
+      <div style="font-family:var(--font-body); font-size:11px; font-weight:500; line-height:1.4; color:var(--text-tertiary);">
+        CÓD. TCPO: 01.001.001 · UNIDADE: m² · ATUALIZADO EM 26/03/2026
+      </div>
+    </div>
+
+    <div class="ds-type-specimen">
+      <div class="ds-type-meta">
+        <span class="ds-type-label">KPI Value</span>
+        <span class="ds-type-specs">DM Sans · Bold 700 · 32px · tabular-nums</span>
+      </div>
+      <div style="font-family:var(--font-display); font-size:32px; font-weight:700; line-height:1.1; font-variant-numeric:tabular-nums; color:var(--text-primary);">R$ 2.847.350,00</div>
+    </div>
+  </div>
+</section>
+''')
+
+# ===================== SECTION: COMPONENTES =====================
+html.append('''
+<!-- ================================ COMPONENTES ================================ -->
+<section class="ds-section" id="componentes">
+  <div class="ds-section-header">
+    <h1 class="ds-section-title">Componentes</h1>
+    <p class="ds-section-desc">Biblioteca de componentes visuais para implementação em React + MUI 7. Cada componente demonstra variantes e estados.</p>
+  </div>
+
+  <!-- BOTÕES -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Botões</h2>
+    <p class="ds-subsection-desc">Variantes: Primary (azul marinho), Secondary (outlined), Accent (dourado), Ghost, Danger. Tamanhos: SM, MD (padrão), LG.</p>
+    <div class="ds-showcase">
+      <div class="ds-showcase-row">
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-secondary">Secondary</button>
+        <button class="btn btn-accent">Accent</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <button class="btn btn-danger">Danger</button>
+        <button class="btn btn-primary disabled">Disabled</button>
+      </div>
+      <div class="ds-showcase-row">
+        <button class="btn btn-primary btn-sm">Pequeno</button>
+        <button class="btn btn-primary">Médio (padrão)</button>
+        <button class="btn btn-primary btn-lg">Grande</button>
+      </div>
+      <div class="ds-showcase-row">
+        <button class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Novo Serviço
+        </button>
+        <button class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar CSV
+        </button>
+        <button class="btn btn-accent">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Aprovar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Cards</h2>
+    <p class="ds-subsection-desc">Card padrão, card com header colorido e card de KPI com indicador de variação.</p>
+    <div class="ds-showcase">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:var(--space-5);">
+        <!-- Card simples -->
+        <div class="ds-card">
+          <div class="ds-card-header">Resumo do Orçamento</div>
+          <div class="ds-card-body">
+            <p style="font-size:14px; color:var(--text-secondary); margin-bottom:var(--space-3);">Orçamento atualizado com base nos serviços homologados e composições próprias da construtora.</p>
+            <button class="btn btn-primary btn-sm">Ver detalhes</button>
+          </div>
+          <div class="ds-card-footer">Atualizado há 2 horas</div>
+        </div>
+        <!-- Card com header navy -->
+        <div class="ds-card">
+          <div class="ds-card-header navy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline; vertical-align:middle; margin-right:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Composição TCPO
+          </div>
+          <div class="ds-card-body">
+            <p style="font-size:14px; color:var(--text-secondary);">Alvenaria de vedação com bloco cerâmico 14×19×39cm, incluindo mão de obra e material.</p>
+          </div>
+        </div>
+        <!-- Card com header gold -->
+        <div class="ds-card">
+          <div class="ds-card-header gold">
+            ★ Destaque
+          </div>
+          <div class="ds-card-body">
+            <p style="font-size:14px; color:var(--text-secondary);">23 novos serviços foram associados ao catálogo esta semana.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:var(--space-5); margin-top:var(--space-6);">
+        <div class="ds-kpi-card">
+          <div class="ds-kpi-label">Serviços Cadastrados</div>
+          <div class="ds-kpi-value">1.284</div>
+          <div class="ds-kpi-delta up">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            +12,4% vs mês anterior
+          </div>
+        </div>
+        <div class="ds-kpi-card">
+          <div class="ds-kpi-label">Orçamento Total</div>
+          <div class="ds-kpi-value">R$ 2,8M</div>
+          <div class="ds-kpi-delta up">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            +5,2% vs mês anterior
+          </div>
+        </div>
+        <div class="ds-kpi-card">
+          <div class="ds-kpi-label">Pendentes Homologação</div>
+          <div class="ds-kpi-value">37</div>
+          <div class="ds-kpi-delta down">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            -8 vs semana anterior
+          </div>
+        </div>
+        <div class="ds-kpi-card">
+          <div class="ds-kpi-label">Associações Ativas</div>
+          <div class="ds-kpi-value">892</div>
+          <div class="ds-kpi-delta up">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            +23 novos hoje
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Inputs</h2>
+    <p class="ds-subsection-desc">Campos de texto com label, helper text, e estados: normal, focused, error, disabled.</p>
+    <div class="ds-showcase">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:var(--space-6);">
+        <div class="ds-input-wrapper">
+          <label class="ds-input-label">Descrição do Serviço <span class="required">*</span></label>
+          <input class="ds-input" type="text" placeholder="Ex: Alvenaria de vedação">
+          <span class="ds-input-helper">Descreva o serviço conforme nomenclatura TCPO</span>
+        </div>
+        <div class="ds-input-wrapper">
+          <label class="ds-input-label">Unidade</label>
+          <select class="ds-input ds-select">
+            <option>Selecione a unidade</option>
+            <option>m²</option>
+            <option>m³</option>
+            <option>m</option>
+            <option>un</option>
+            <option>kg</option>
+          </select>
+        </div>
+        <div class="ds-input-wrapper">
+          <label class="ds-input-label">Custo Unitário <span class="required">*</span></label>
+          <input class="ds-input error" type="text" value="abc">
+          <span class="ds-input-helper error">Valor deve ser numérico. Ex: 125,50</span>
+        </div>
+        <div class="ds-input-wrapper">
+          <label class="ds-input-label">Observações</label>
+          <input class="ds-input" type="text" value="Campo preenchido" disabled>
+          <span class="ds-input-helper">Campo desabilitado — sem permissão para editar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABELA -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Tabela</h2>
+    <p class="ds-subsection-desc">Header azul marinho, rows alternadas, hover state. Exemplo: lista de serviços do catálogo.</p>
+    <div class="ds-showcase" style="padding:0; overflow:hidden;">
+      <div class="ds-table-container" style="border:none; border-radius:0;">
+        <table class="ds-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descrição</th>
+              <th>Unidade</th>
+              <th>Custo Unit.</th>
+              <th>Fonte</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;">01.001.001</td>
+              <td>Alvenaria de vedação — bloco cerâmico 14×19×39cm</td>
+              <td>m²</td>
+              <td style="font-variant-numeric:tabular-nums;">R$ 87,45</td>
+              <td><span class="ds-chip chip-tcpo"><span class="ds-chip-dot"></span>TCPO</span></td>
+              <td><span class="ds-chip chip-approved"><span class="ds-chip-dot"></span>Aprovado</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">02.003.015</td>
+              <td>Revestimento cerâmico para piso — área interna</td>
+              <td>m²</td>
+              <td style="font-variant-numeric:tabular-nums;">R$ 142,30</td>
+              <td><span class="ds-chip chip-tcpo"><span class="ds-chip-dot"></span>TCPO</span></td>
+              <td><span class="ds-chip chip-pending"><span class="ds-chip-dot"></span>Pendente</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">PR.012.004</td>
+              <td>Concretagem de laje — fck 30 MPa com bombeamento</td>
+              <td>m³</td>
+              <td style="font-variant-numeric:tabular-nums;">R$ 485,00</td>
+              <td><span class="ds-chip chip-propria"><span class="ds-chip-dot"></span>PRÓPRIA</span></td>
+              <td><span class="ds-chip chip-approved"><span class="ds-chip-dot"></span>Aprovado</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">03.007.002</td>
+              <td>Pintura acrílica externa — 2 demãos sobre massa</td>
+              <td>m²</td>
+              <td style="font-variant-numeric:tabular-nums;">R$ 28,90</td>
+              <td><span class="ds-chip chip-tcpo"><span class="ds-chip-dot"></span>TCPO</span></td>
+              <td><span class="ds-chip chip-rejected"><span class="ds-chip-dot"></span>Reprovado</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">PR.045.001</td>
+              <td>Impermeabilização de baldrames — manta asfáltica 4mm</td>
+              <td>m²</td>
+              <td style="font-variant-numeric:tabular-nums;">R$ 67,80</td>
+              <td><span class="ds-chip chip-propria"><span class="ds-chip-dot"></span>PRÓPRIA</span></td>
+              <td><span class="ds-chip chip-pending"><span class="ds-chip-dot"></span>Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHIPS -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Chips / Badges</h2>
+    <p class="ds-subsection-desc">Status chips para workflow de homologação e categorização de fontes de dados.</p>
+    <div class="ds-showcase">
+      <div class="ds-showcase-row">
+        <span class="ds-chip chip-approved"><span class="ds-chip-dot"></span>Aprovado</span>
+        <span class="ds-chip chip-pending"><span class="ds-chip-dot"></span>Pendente</span>
+        <span class="ds-chip chip-rejected"><span class="ds-chip-dot"></span>Reprovado</span>
+        <span class="ds-chip chip-tcpo"><span class="ds-chip-dot"></span>TCPO</span>
+        <span class="ds-chip chip-propria"><span class="ds-chip-dot"></span>PRÓPRIA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Modal / Dialog</h2>
+    <p class="ds-subsection-desc">Dialog de confirmação para ações destrutivas ou que exigem validação do usuário.</p>
+    <div class="ds-dialog-overlay">
+      <div class="ds-dialog">
+        <div class="ds-dialog-header">
+          <span class="ds-dialog-title">Confirmar Exclusão</span>
+          <button class="ds-dialog-close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="ds-dialog-body">
+          <div class="ds-dialog-icon warning">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <p>Tem certeza que deseja excluir o serviço <strong>"Alvenaria de vedação — bloco cerâmico 14×19×39cm"</strong>? Esta ação não poderá ser desfeita.</p>
+        </div>
+        <div class="ds-dialog-footer">
+          <button class="btn btn-ghost btn-sm">Cancelar</button>
+          <button class="btn btn-danger btn-sm">Excluir Serviço</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR & TOPBAR MOCKUPS -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Sidebar Navigation</h2>
+    <p class="ds-subsection-desc">Menu lateral com ícones e indicador visual de item ativo (borda dourada).</p>
+    <div class="ds-showcase">
+      <div class="ds-sidebar-mockup">
+        <div class="ds-sidebar-mockup-logo">
+          <svg viewBox="0 0 180 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:150px;">
+            <polygon points="3,20 15,6 15,13 8,20 15,27 15,34" fill="#E8A623"/>
+            <polygon points="10,20 22,6 22,13 15,20 22,27 22,34" fill="#FFFFFF"/>
+            <text x="30" y="15" font-family="DM Sans, sans-serif" font-size="7" font-weight="600" letter-spacing="2" fill="rgba(255,255,255,0.5)">CONSTRUTORA</text>
+            <text x="30" y="30" font-family="DM Sans, sans-serif" font-size="15" font-weight="700" letter-spacing="1" fill="#FFFFFF">DINÂMICA</text>
+          </svg>
+        </div>
+        <div class="ds-sidebar-mockup-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </div>
+        <div class="ds-sidebar-mockup-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Busca de Serviços
+        </div>
+        <div class="ds-sidebar-mockup-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Catálogo
+        </div>
+        <div class="ds-sidebar-mockup-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Homologação
+        </div>
+        <div class="ds-sidebar-mockup-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          Usuários
+        </div>
+        <div class="ds-sidebar-mockup-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Configurações
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Topbar</h2>
+    <p class="ds-subsection-desc">Barra superior com logo, seletor de cliente (multi-tenant), e avatar do usuário.</p>
+    <div class="ds-showcase">
+      <div class="ds-topbar-mockup">
+        <div class="ds-topbar-mockup-left">
+          <svg viewBox="0 0 130 32" fill="none" style="width:120px; height:28px;">
+            <polygon points="2,16 11,5 11,10 6,16 11,22 11,27" fill="#E8A623"/>
+            <polygon points="8,16 17,5 17,10 12,16 17,22 17,27" fill="var(--navy-700)"/>
+            <text x="23" y="12" font-family="DM Sans, sans-serif" font-size="6" font-weight="600" letter-spacing="2" fill="var(--text-tertiary)">CONSTRUTORA</text>
+            <text x="23" y="25" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" letter-spacing="1" fill="var(--text-primary)">DINÂMICA</text>
+          </svg>
+          <div style="width:1px; height:28px; background:var(--border);"></div>
+          <span style="font-size:14px; font-weight:600; color:var(--text-primary);">Budget</span>
+        </div>
+        <div class="ds-topbar-mockup-right">
+          <div class="ds-client-select">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Residencial Parque Sul
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <button class="ds-theme-toggle" style="border:1px solid var(--border);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </button>
+          <div class="ds-avatar">RS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALERTS -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Alerts / Toasts</h2>
+    <p class="ds-subsection-desc">Feedback contextual para ações do sistema: success, error, warning, info.</p>
+    <div class="ds-showcase">
+      <div style="display:flex; flex-direction:column; gap:var(--space-4);">
+        <div class="ds-alert alert-success">
+          <svg class="ds-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div class="ds-alert-content">
+            <div class="ds-alert-title">Serviço homologado com sucesso</div>
+            <div class="ds-alert-message">O serviço "Alvenaria de vedação" foi aprovado e adicionado ao catálogo.</div>
+          </div>
+        </div>
+        <div class="ds-alert alert-error">
+          <svg class="ds-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <div class="ds-alert-content">
+            <div class="ds-alert-title">Erro ao salvar composição</div>
+            <div class="ds-alert-message">Não foi possível salvar. Verifique se todos os campos obrigatórios estão preenchidos.</div>
+          </div>
+        </div>
+        <div class="ds-alert alert-warning">
+          <svg class="ds-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div class="ds-alert-content">
+            <div class="ds-alert-title">Preço desatualizado</div>
+            <div class="ds-alert-message">A composição utiliza referências com mais de 90 dias. Considere atualizar os valores.</div>
+          </div>
+        </div>
+        <div class="ds-alert alert-info">
+          <svg class="ds-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div class="ds-alert-content">
+            <div class="ds-alert-title">Nova base TCPO disponível</div>
+            <div class="ds-alert-message">A base de preços TCPO foi atualizada em 25/03/2026. Os embeddings serão recalculados automaticamente.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Empty State</h2>
+    <p class="ds-subsection-desc">Exibido quando não há dados para mostrar. Inclui ilustração, texto explicativo e ação.</p>
+    <div class="ds-showcase">
+      <div class="ds-empty">
+        <div class="ds-empty-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        </div>
+        <div class="ds-empty-title">Nenhum serviço encontrado</div>
+        <div class="ds-empty-desc">Não encontramos serviços com os filtros selecionados. Tente ajustar sua busca ou cadastre um novo serviço.</div>
+        <button class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Cadastrar Serviço
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Loading</h2>
+    <p class="ds-subsection-desc">Skeleton loading para conteúdo em carregamento e spinner para ações pontuais.</p>
+    <div class="ds-showcase">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-6);">
+        <!-- Skeleton Card -->
+        <div style="border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:var(--space-5); background:var(--surface);">
+          <div style="font-size:12px; font-weight:600; color:var(--text-tertiary); margin-bottom:var(--space-4); text-transform:uppercase; letter-spacing:0.5px;">Skeleton — Card KPI</div>
+          <div class="ds-skeleton" style="width:60%; height:14px; margin-bottom:var(--space-3);"></div>
+          <div class="ds-skeleton" style="width:40%; height:32px; margin-bottom:var(--space-3);"></div>
+          <div class="ds-skeleton" style="width:80%; height:12px;"></div>
+        </div>
+        <!-- Skeleton Table -->
+        <div style="border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:var(--space-5); background:var(--surface);">
+          <div style="font-size:12px; font-weight:600; color:var(--text-tertiary); margin-bottom:var(--space-4); text-transform:uppercase; letter-spacing:0.5px;">Skeleton — Tabela</div>
+          <div class="ds-skeleton" style="width:100%; height:36px; margin-bottom:var(--space-2); border-radius:var(--radius-sm);"></div>
+          <div class="ds-skeleton" style="width:100%; height:28px; margin-bottom:var(--space-2); border-radius:var(--radius-sm);"></div>
+          <div class="ds-skeleton" style="width:100%; height:28px; margin-bottom:var(--space-2); border-radius:var(--radius-sm);"></div>
+          <div class="ds-skeleton" style="width:100%; height:28px; border-radius:var(--radius-sm);"></div>
+        </div>
+      </div>
+      <!-- Spinner -->
+      <div style="display:flex; align-items:center; gap:var(--space-6); margin-top:var(--space-6); justify-content:center;">
+        <div style="text-align:center;">
+          <div class="ds-spinner" style="margin:0 auto var(--space-3);"></div>
+          <div style="font-size:13px; color:var(--text-secondary);">Carregando...</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="ds-spinner" style="margin:0 auto var(--space-3); width:24px; height:24px; border-width:2.5px;"></div>
+          <div style="font-size:13px; color:var(--text-secondary);">Pequeno</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="ds-spinner" style="margin:0 auto var(--space-3); width:48px; height:48px; border-width:4px;"></div>
+          <div style="font-size:13px; color:var(--text-secondary);">Grande</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+''')
+
+# ===================== SECTION: LAYOUTS =====================
+html.append('''
+<!-- ================================ LAYOUTS ================================ -->
+<section class="ds-section" id="layouts">
+  <div class="ds-section-header">
+    <h1 class="ds-section-title">Layouts de Páginas</h1>
+    <p class="ds-section-desc">Wireframes funcionais com dados reais demonstrando as principais telas do Dinâmica Budget.</p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Dashboard</h2>
+    <p class="ds-subsection-desc">Visão geral com 4 KPIs, gráfico de barras e atividade recente.</p>
+    <div class="ds-wireframe">
+      <div class="ds-wireframe-topbar">
+        <span>Dashboard</span>
+        <span style="font-weight:400; font-size:12px; color:var(--text-tertiary);">Última atualização: 26/03/2026 14:32</span>
+      </div>
+      <div class="ds-wireframe-body">
+        <div class="ds-wireframe-kpi-grid">
+          <div class="ds-wireframe-kpi" style="border-top:3px solid var(--navy-700);">
+            <div class="ds-wireframe-kpi-label">Total de Serviços</div>
+            <div class="ds-wireframe-kpi-value">1.284</div>
+            <div style="font-size:12px; color:var(--success-600); font-weight:600; margin-top:4px;">↑ 12,4%</div>
+          </div>
+          <div class="ds-wireframe-kpi" style="border-top:3px solid var(--gold-500);">
+            <div class="ds-wireframe-kpi-label">Orçamento Acumulado</div>
+            <div class="ds-wireframe-kpi-value">R$ 2,8M</div>
+            <div style="font-size:12px; color:var(--success-600); font-weight:600; margin-top:4px;">↑ 5,2%</div>
+          </div>
+          <div class="ds-wireframe-kpi" style="border-top:3px solid var(--warning-500);">
+            <div class="ds-wireframe-kpi-label">Pendentes</div>
+            <div class="ds-wireframe-kpi-value">37</div>
+            <div style="font-size:12px; color:var(--error-600); font-weight:600; margin-top:4px;">↓ 8 vs anterior</div>
+          </div>
+          <div class="ds-wireframe-kpi" style="border-top:3px solid var(--success-600);">
+            <div class="ds-wireframe-kpi-label">Taxa de Aprovação</div>
+            <div class="ds-wireframe-kpi-value">94,2%</div>
+            <div style="font-size:12px; color:var(--success-600); font-weight:600; margin-top:4px;">↑ 1,8%</div>
+          </div>
+        </div>
+        <div class="ds-wireframe-chart">
+          <div class="ds-wireframe-chart-title">Serviços cadastrados por mês</div>
+          <div class="ds-wireframe-bar" style="height:55%; background:var(--navy-100);"></div>
+          <div class="ds-wireframe-bar" style="height:70%; background:var(--navy-200);"></div>
+          <div class="ds-wireframe-bar" style="height:45%; background:var(--navy-100);"></div>
+          <div class="ds-wireframe-bar" style="height:85%; background:var(--navy-300);"></div>
+          <div class="ds-wireframe-bar" style="height:60%; background:var(--navy-200);"></div>
+          <div class="ds-wireframe-bar" style="height:95%; background:var(--navy-700);"></div>
+          <div class="ds-wireframe-bar" style="height:50%; background:var(--navy-100);"></div>
+          <div class="ds-wireframe-bar" style="height:75%; background:var(--navy-200);"></div>
+          <div class="ds-wireframe-bar" style="height:40%; background:var(--navy-100);"></div>
+          <div class="ds-wireframe-bar" style="height:80%; background:var(--navy-300);"></div>
+          <div class="ds-wireframe-bar" style="height:65%; background:var(--navy-200);"></div>
+          <div class="ds-wireframe-bar" style="height:100%; background:var(--gold-500);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUSCA DE SERVIÇOS -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Busca de Serviços</h2>
+    <p class="ds-subsection-desc">Campo de busca com motor de 4 fases, filtros laterais e tabela de resultados.</p>
+    <div class="ds-wireframe">
+      <div class="ds-wireframe-topbar">
+        <span>Busca de Serviços</span>
+        <span style="font-weight:400; font-size:12px; color:var(--text-tertiary);">Motor de busca semântica — 4 fases</span>
+      </div>
+      <div class="ds-wireframe-body">
+        <div class="ds-wireframe-search-bar">
+          <input class="ds-input" type="text" placeholder="Buscar serviços... Ex: alvenaria vedação bloco cerâmico" style="flex:1;">
+          <select class="ds-input ds-select" style="min-width:140px; max-width:180px;">
+            <option>Todas as fontes</option>
+            <option>TCPO</option>
+            <option>PRÓPRIA</option>
+          </select>
+          <button class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Buscar
+          </button>
+        </div>
+        <div style="display:flex; gap:var(--space-2); margin-bottom:var(--space-4); flex-wrap:wrap;">
+          <span class="ds-chip" style="background:var(--navy-50); color:var(--navy-700); cursor:pointer;">Fase 1: Exata</span>
+          <span class="ds-chip" style="background:var(--gold-100); color:var(--gold-700); border:1px solid var(--gold-300); cursor:pointer;">Fase 2: Semântica ✓</span>
+          <span class="ds-chip" style="background:var(--surface); color:var(--text-tertiary); border:1px solid var(--border); cursor:pointer;">Fase 3: Fuzzy</span>
+          <span class="ds-chip" style="background:var(--surface); color:var(--text-tertiary); border:1px solid var(--border); cursor:pointer;">Fase 4: Parcial</span>
+          <span style="font-size:13px; color:var(--text-secondary); margin-left:auto; align-self:center;">23 resultados em 0,4s</span>
+        </div>
+        <div class="ds-table-container">
+          <table class="ds-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Unidade</th>
+                <th>Custo Unit.</th>
+                <th>Similaridade</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:600;">01.001.001</td>
+                <td>Alvenaria de vedação — bloco cerâmico 14×19×39cm</td>
+                <td>m²</td>
+                <td style="font-variant-numeric:tabular-nums;">R$ 87,45</td>
+                <td><span style="color:var(--success-600); font-weight:600;">98,2%</span></td>
+                <td><button class="btn btn-secondary btn-sm">Selecionar</button></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">01.001.003</td>
+                <td>Alvenaria de vedação — bloco cerâmico 9×19×39cm</td>
+                <td>m²</td>
+                <td style="font-variant-numeric:tabular-nums;">R$ 72,30</td>
+                <td><span style="color:var(--success-600); font-weight:600;">91,5%</span></td>
+                <td><button class="btn btn-secondary btn-sm">Selecionar</button></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">01.002.001</td>
+                <td>Alvenaria estrutural — bloco de concreto 14×19×39cm</td>
+                <td>m²</td>
+                <td style="font-variant-numeric:tabular-nums;">R$ 110,00</td>
+                <td><span style="color:var(--gold-700); font-weight:600;">78,3%</span></td>
+                <td><button class="btn btn-secondary btn-sm">Selecionar</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATÁLOGO -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Catálogo de Serviços</h2>
+    <p class="ds-subsection-desc">Lista paginada com filtros de fonte e status, e ações em cada item.</p>
+    <div class="ds-wireframe">
+      <div class="ds-wireframe-topbar">
+        <span>Catálogo de Serviços</span>
+        <div style="display:flex; gap:var(--space-2);">
+          <button class="btn btn-primary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo
+          </button>
+          <button class="btn btn-secondary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar
+          </button>
+        </div>
+      </div>
+      <div class="ds-wireframe-body">
+        <div style="display:flex; gap:var(--space-3); margin-bottom:var(--space-4); flex-wrap:wrap;">
+          <input class="ds-input" type="text" placeholder="Filtrar por descrição..." style="flex:1; min-width:200px; padding:8px 12px; font-size:13px;">
+          <select class="ds-input ds-select" style="min-width:130px; padding:8px 12px; font-size:13px;">
+            <option>Todas as fontes</option>
+          </select>
+          <select class="ds-input ds-select" style="min-width:130px; padding:8px 12px; font-size:13px;">
+            <option>Todos os status</option>
+          </select>
+        </div>
+        <div class="ds-table-container">
+          <table class="ds-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Un.</th>
+                <th>Custo</th>
+                <th>Fonte</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:600;">01.001.001</td>
+                <td>Alvenaria de vedação — bloco cerâmico</td>
+                <td>m²</td>
+                <td>R$ 87,45</td>
+                <td><span class="ds-chip chip-tcpo"><span class="ds-chip-dot"></span>TCPO</span></td>
+                <td><span class="ds-chip chip-approved"><span class="ds-chip-dot"></span>Aprovado</span></td>
+                <td>
+                  <div style="display:flex; gap:4px;">
+                    <button class="btn btn-ghost btn-sm" style="padding:4px 8px;" title="Editar">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </button>
+                    <button class="btn btn-ghost btn-sm" style="padding:4px 8px; color:var(--error-500);" title="Excluir">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">PR.012.004</td>
+                <td>Concretagem de laje — fck 30 MPa</td>
+                <td>m³</td>
+                <td>R$ 485,00</td>
+                <td><span class="ds-chip chip-propria"><span class="ds-chip-dot"></span>PRÓPRIA</span></td>
+                <td><span class="ds-chip chip-approved"><span class="ds-chip-dot"></span>Aprovado</span></td>
+                <td>
+                  <div style="display:flex; gap:4px;">
+                    <button class="btn btn-ghost btn-sm" style="padding:4px 8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button class="btn btn-ghost btn-sm" style="padding:4px 8px; color:var(--error-500);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:var(--space-4); font-size:13px; color:var(--text-secondary);">
+          <span>Mostrando 1-20 de 1.284 serviços</span>
+          <div style="display:flex; gap:var(--space-1);">
+            <button class="btn btn-ghost btn-sm" style="padding:6px 10px;">← Anterior</button>
+            <button class="btn btn-sm" style="padding:6px 10px; background:var(--navy-700); color:#fff; border-radius:var(--radius-sm);">1</button>
+            <button class="btn btn-ghost btn-sm" style="padding:6px 10px;">2</button>
+            <button class="btn btn-ghost btn-sm" style="padding:6px 10px;">3</button>
+            <button class="btn btn-ghost btn-sm" style="padding:6px 10px;">Próxima →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOMOLOGAÇÃO -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Homologação</h2>
+    <p class="ds-subsection-desc">Lista de itens pendentes de aprovação com ações de aprovar/rejeitar inline.</p>
+    <div class="ds-wireframe">
+      <div class="ds-wireframe-topbar">
+        <span>Homologação de Serviços</span>
+        <span style="font-weight:400; font-size:12px;"><span style="background:var(--warning-100); color:var(--warning-700); padding:2px 8px; border-radius:100px; font-weight:600;">37 pendentes</span></span>
+      </div>
+      <div class="ds-wireframe-body">
+        <div class="ds-homolog-item">
+          <div class="ds-homolog-info">
+            <div class="ds-homolog-name">Revestimento cerâmico para piso — área interna</div>
+            <div class="ds-homolog-meta">Código: 02.003.015 · TCPO · m² · R$ 142,30 · Enviado por João Silva · 25/03/2026</div>
+          </div>
+          <div class="ds-homolog-actions">
+            <button class="btn btn-sm" style="background:var(--success-600); color:#fff; padding:6px 16px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Aprovar
+            </button>
+            <button class="btn btn-sm" style="background:var(--error-600); color:#fff; padding:6px 16px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Rejeitar
+            </button>
+          </div>
+        </div>
+        <div class="ds-homolog-item">
+          <div class="ds-homolog-info">
+            <div class="ds-homolog-name">Impermeabilização de baldrames — manta asfáltica 4mm</div>
+            <div class="ds-homolog-meta">Código: PR.045.001 · PRÓPRIA · m² · R$ 67,80 · Enviado por Maria Souza · 24/03/2026</div>
+          </div>
+          <div class="ds-homolog-actions">
+            <button class="btn btn-sm" style="background:var(--success-600); color:#fff; padding:6px 16px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Aprovar
+            </button>
+            <button class="btn btn-sm" style="background:var(--error-600); color:#fff; padding:6px 16px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Rejeitar
+            </button>
+          </div>
+        </div>
+        <div class="ds-homolog-item">
+          <div class="ds-homolog-info">
+            <div class="ds-homolog-name">Pintura acrílica interna — 2 demãos c/ massa corrida PVA</div>
+            <div class="ds-homolog-meta">Código: 03.008.001 · TCPO · m² · R$ 34,50 · Enviado por Carlos Mendes · 24/03/2026</div>
+          </div>
+          <div class="ds-homolog-actions">
+            <button class="btn btn-sm" style="background:var(--success-600); color:#fff; padding:6px 16px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Aprovar
+            </button>
+            <button class="btn btn-sm" style="background:var(--error-600); color:#fff; padding:6px 16px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Rejeitar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+''')
+
+# ===================== SECTION: ÍCONES E ELEMENTOS =====================
+html.append('''
+<!-- ================================ ÍCONES E ELEMENTOS ================================ -->
+<section class="ds-section" id="icones">
+  <div class="ds-section-header">
+    <h1 class="ds-section-title">Ícones e Elementos</h1>
+    <p class="ds-section-desc">Padrão de ícones SVG, elemento decorativo chevron da marca, e sistema de espaçamento e grid.</p>
+  </div>
+
+  <!-- Chevron Decorativo -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Chevron — Elemento de Marca</h2>
+    <p class="ds-subsection-desc">A seta/chevron dupla é o motif visual principal da Construtora Dinâmica, simbolizando progresso e avanço.</p>
+    <div class="ds-chevron-demo">
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+        <polygon points="10,60 45,15 45,32 25,60 45,88 45,105" fill="#E8A623" opacity="0.9"/>
+        <polygon points="35,60 70,15 70,32 50,60 70,88 70,105" fill="rgba(255,255,255,0.3)"/>
+        <polygon points="55,60 90,15 90,32 70,60 90,88 90,105" fill="rgba(255,255,255,0.12)"/>
+      </svg>
+      <div>
+        <div style="font-family:var(--font-display); font-size:22px; font-weight:700; color:#FFFFFF; margin-bottom:var(--space-3);">Chevron Decorativo</div>
+        <div class="ds-chevron-demo-text">
+          Use como watermark, separador visual ou elemento de fundo. Sempre com opacidade reduzida quando em background. Cores: dourado (#E8A623) em destaque, branco ou cinza em layers secundários.
+        </div>
+      </div>
+    </div>
+    <!-- Usage variations -->
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--space-4); margin-top:var(--space-5);">
+      <div style="background:var(--surface); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:var(--space-5); text-align:center;">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" style="margin:0 auto var(--space-3);">
+          <polygon points="8,30 25,8 25,16 15,30 25,44 25,52" fill="var(--gold-500)"/>
+          <polygon points="20,30 37,8 37,16 27,30 37,44 37,52" fill="var(--navy-700)"/>
+        </svg>
+        <div style="font-size:13px; font-weight:600; color:var(--text-primary);">Logo Icon</div>
+        <div style="font-size:12px; color:var(--text-secondary);">Gold + Navy</div>
+      </div>
+      <div style="background:var(--navy-700); border:1px solid var(--navy-600); border-radius:var(--radius-lg); padding:var(--space-5); text-align:center;">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" style="margin:0 auto var(--space-3);">
+          <polygon points="8,30 25,8 25,16 15,30 25,44 25,52" fill="#E8A623"/>
+          <polygon points="20,30 37,8 37,16 27,30 37,44 37,52" fill="rgba(255,255,255,0.8)"/>
+        </svg>
+        <div style="font-size:13px; font-weight:600; color:#FFFFFF;">Sobre Navy</div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.6);">Gold + White</div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:var(--space-5); text-align:center; position:relative; overflow:hidden;">
+        <svg width="100" height="80" viewBox="0 0 100 80" fill="none" style="position:absolute; right:-10px; top:50%; transform:translateY(-50%); opacity:0.08;">
+          <polygon points="10,40 40,5 40,18 22,40 40,62 40,75" fill="var(--navy-700)"/>
+          <polygon points="30,40 60,5 60,18 42,40 60,62 60,75" fill="var(--navy-700)"/>
+        </svg>
+        <div style="font-size:13px; font-weight:600; color:var(--text-primary); position:relative;">Watermark</div>
+        <div style="font-size:12px; color:var(--text-secondary); position:relative;">Opacidade 8%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ícones -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Padrão de Ícones</h2>
+    <p class="ds-subsection-desc">Ícones SVG stroke-based, 24×24px, stroke-width 2. Estilo consistente com Lucide Icons.</p>
+    <div class="ds-icon-grid">
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Busca</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Catálogo</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Aprovar</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <span>Rejeitar</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Adicionar</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <span>Editar</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        <span>Excluir</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Download</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <span>Pasta</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        <span>Usuários</span>
+      </div>
+      <div class="ds-icon-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Config</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Espaçamento -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Sistema de Espaçamento</h2>
+    <p class="ds-subsection-desc">Base de 4px. Todos os margins, paddings e gaps referenciam estes tokens.</p>
+    <div class="ds-showcase">
+      <div class="ds-spacing-demo">
+        <div class="ds-spacing-item">
+          <div class="ds-spacing-label">--space-1 (4px)</div>
+          <div class="ds-spacing-bar" style="width:16px;"></div>
+        </div>
+        <div class="ds-spacing-item">
+          <div class="ds-spacing-label">--space-2 (8px)</div>
+          <div class="ds-spacing-bar" style="width:32px;"></div>
+        </div>
+        <div class="ds-spacing-item">
+          <div class="ds-spacing-label">--space-3 (12px)</div>
+          <div class="ds-spacing-bar" style="width:48px;"></div>
+        </div>
+        <div class="ds-spacing-item">
+          <div class="ds-spacing-label">--space-4 (16px)</div>
+          <div class="ds-spacing-bar" style="width:64px;"></div>
+        </div>
+        <div class="ds-spacing-item">
+          <div class="ds-spacing-label">--space-6 (24px)</div>
+          <div class="ds-spacing-bar" style="width:96px;"></div>
+        </div>
+        <div class="ds-spacing-item">
+          <div class="ds-spacing-label">--space-8 (32px)</div>
+          <div class="ds-spacing-bar" style="width:128px;"></div>
+        </div>
+        <div class="ds-spacing-item">
+          <div class="ds-spacing-label">--space-10 (40px)</div>
+          <div class="ds-spacing-bar" style="width:160px;"></div>
+        </div>
+        <div class="ds-spacing-item">
+          <div class="ds-spacing-label">--space-12 (48px)</div>
+          <div class="ds-spacing-bar" style="width:192px;"></div>
+        </div>
+        <div class="ds-spacing-item">
+          <div class="ds-spacing-label">--space-16 (64px)</div>
+          <div class="ds-spacing-bar" style="width:256px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Grid — 12 Colunas</h2>
+    <p class="ds-subsection-desc">Sistema de grid de 12 colunas com gap de 8px, base para layouts responsivos.</p>
+    <div class="ds-showcase">
+      <div class="ds-grid-demo" style="margin-bottom:var(--space-4);">
+        <div class="ds-grid-col">1</div><div class="ds-grid-col">2</div><div class="ds-grid-col">3</div><div class="ds-grid-col">4</div><div class="ds-grid-col">5</div><div class="ds-grid-col">6</div><div class="ds-grid-col">7</div><div class="ds-grid-col">8</div><div class="ds-grid-col">9</div><div class="ds-grid-col">10</div><div class="ds-grid-col">11</div><div class="ds-grid-col">12</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(12, 1fr); gap:var(--space-2); margin-bottom:var(--space-2);">
+        <div class="ds-grid-col" style="grid-column:span 3; background:var(--navy-200); color:var(--navy-900);">3 cols</div>
+        <div class="ds-grid-col" style="grid-column:span 6; background:var(--navy-700); color:#fff;">6 cols</div>
+        <div class="ds-grid-col" style="grid-column:span 3; background:var(--navy-200); color:var(--navy-900);">3 cols</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(12, 1fr); gap:var(--space-2); margin-bottom:var(--space-2);">
+        <div class="ds-grid-col" style="grid-column:span 4; background:var(--gold-200); color:var(--gold-700);">4 cols</div>
+        <div class="ds-grid-col" style="grid-column:span 4; background:var(--gold-500); color:var(--navy-900);">4 cols</div>
+        <div class="ds-grid-col" style="grid-column:span 4; background:var(--gold-200); color:var(--gold-700);">4 cols</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(12, 1fr); gap:var(--space-2);">
+        <div class="ds-grid-col" style="grid-column:span 8; background:var(--navy-100); color:var(--navy-700);">8 cols — Conteúdo principal</div>
+        <div class="ds-grid-col" style="grid-column:span 4; background:var(--navy-50); color:var(--navy-500);">4 cols — Sidebar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MUI Mapping -->
+  <div class="ds-subsection">
+    <h2 class="ds-subsection-title">Mapeamento MUI 7</h2>
+    <p class="ds-subsection-desc">Referência de tokens do design system para configuração do tema MUI.</p>
+    <div class="ds-table-container">
+      <table class="ds-table">
+        <thead>
+          <tr>
+            <th>Design Token</th>
+            <th>MUI Theme Key</th>
+            <th>Valor Light</th>
+            <th>Valor Dark</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight:600;">--navy-700</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">palette.primary.main</code></td><td>#1B2A4A</td><td>#6B83B8</td></tr>
+          <tr><td style="font-weight:600;">--gold-500</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">palette.secondary.main</code></td><td>#E8A623</td><td>#F0B942</td></tr>
+          <tr><td style="font-weight:600;">--success-600</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">palette.success.main</code></td><td>#16A34A</td><td>#22C55E</td></tr>
+          <tr><td style="font-weight:600;">--error-600</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">palette.error.main</code></td><td>#DC2626</td><td>#EF4444</td></tr>
+          <tr><td style="font-weight:600;">--warning-600</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">palette.warning.main</code></td><td>#EA580C</td><td>#F97316</td></tr>
+          <tr><td style="font-weight:600;">--info-600</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">palette.info.main</code></td><td>#0284C7</td><td>#0EA5E9</td></tr>
+          <tr><td style="font-weight:600;">--bg</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">palette.background.default</code></td><td>#FFFFFF</td><td>#0D1117</td></tr>
+          <tr><td style="font-weight:600;">--surface</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">palette.background.paper</code></td><td>#FFFFFF</td><td>#161B22</td></tr>
+          <tr><td style="font-weight:600;">--font-display</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">typography.fontFamily (h1-h4)</code></td><td colspan="2">DM Sans, sans-serif</td></tr>
+          <tr><td style="font-weight:600;">--font-body</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">typography.fontFamily (body)</code></td><td colspan="2">Inter, sans-serif</td></tr>
+          <tr><td style="font-weight:600;">--radius-md</td><td><code style="font-size:12px; background:var(--bg-alt); padding:2px 6px; border-radius:3px;">shape.borderRadius</code></td><td colspan="2">8px</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+''')
+
+# ===================== CLOSE CONTENT / MAIN =====================
+html.append('''
+  </div><!-- .ds-content -->
+</main>
+</div><!-- .ds-layout -->
+
+<footer class="ds-footer">
+  <p>Dinâmica Budget — Design System v1.0 · Março 2026</p>
+  <p style="margin-top:var(--space-2);">
+    <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+  </p>
+</footer>
+''')
+
+# ===================== JAVASCRIPT =====================
+html.append('''
+<script>
+// ===== Theme Toggle =====
+(function() {
+  const toggle = document.querySelector('[data-theme-toggle]');
+  const root = document.documentElement;
+  let theme = 'light';
+
+  const sunIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  const moonIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      theme = theme === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', theme);
+      toggle.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+      toggle.setAttribute('aria-label', 'Alternar para ' + (theme === 'dark' ? 'claro' : 'escuro'));
+    });
+  }
+})();
+
+// ===== Section Navigation =====
+(function() {
+  const links = document.querySelectorAll('.ds-sidebar-nav a');
+  const sections = document.querySelectorAll('.ds-section');
+
+  links.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = link.dataset.section;
+
+      // Update active link
+      links.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+
+      // Show target section
+      sections.forEach(s => s.classList.remove('active'));
+      const targetSection = document.getElementById(target);
+      if (targetSection) {
+        targetSection.classList.add('active');
+      }
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+})();
+</script>
+</body>
+</html>
+''')
+
+# Write out
+with open('/home/user/workspace/dinamica-design-system/index.html', 'w', encoding='utf-8') as f:
+    f.write(''.join(html))
+
+print(f"Generated index.html: {len(''.join(html))} chars")
