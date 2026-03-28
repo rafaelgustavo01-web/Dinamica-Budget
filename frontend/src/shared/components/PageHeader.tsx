@@ -10,17 +10,19 @@ interface PageHeaderProps {
 export function PageHeader({ title, description, actions }: PageHeaderProps) {
   return (
     <Stack
-      direction={{ xs: 'column', lg: 'row' }}
-      spacing={2}
+      direction={{ xs: 'column', xl: 'row' }}
+      spacing={2.5}
       justifyContent="space-between"
-      alignItems={{ xs: 'flex-start', lg: 'flex-end' }}
-      sx={{ mb: 3 }}
+      alignItems={{ xs: 'flex-start', xl: 'flex-end' }}
+      sx={{ mb: { xs: 3, md: 4 }, width: '100%' }}
     >
       <Box
         sx={{
           position: 'relative',
           pl: 2.5,
-          maxWidth: 780,
+          pr: { xs: 0, md: 2 },
+          maxWidth: { xs: '100%', xl: 840 },
+          minWidth: 0,
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -34,7 +36,7 @@ export function PageHeader({ title, description, actions }: PageHeaderProps) {
           },
         }}
       >
-        <Typography variant="h2" sx={{ mb: 0.8 }}>
+        <Typography variant="h2" sx={{ mb: 0.8, wordBreak: 'break-word' }}>
           {title}
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -42,7 +44,7 @@ export function PageHeader({ title, description, actions }: PageHeaderProps) {
         </Typography>
       </Box>
 
-      {actions ? <Box sx={{ width: { xs: '100%', lg: 'auto' } }}>{actions}</Box> : null}
+      {actions ? <Box sx={{ width: { xs: '100%', xl: 'auto' } }}>{actions}</Box> : null}
     </Stack>
   );
 }

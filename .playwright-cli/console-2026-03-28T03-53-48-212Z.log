@@ -1,0 +1,3 @@
+[     307ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:5173/favicon.ico:0
+[  723274ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:5173/src/shared/components/layout/Topbar.tsx?t=1774670751481:0
+[  723275ms] [ERROR] [vite] Failed to reload /src/shared/components/layout/Topbar.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:904

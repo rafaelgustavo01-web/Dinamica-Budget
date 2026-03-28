@@ -23,14 +23,22 @@ export function ClientSelector({
 }: ClientSelectorProps) {
   if (isAdmin) {
     return (
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={1}
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+        sx={{ width: { xs: '100%', md: 'auto' } }}
+      >
         <TextField
           size="small"
           label="Cliente"
+          fullWidth
           value={selectedClientId}
           onChange={(event) => onChange(event.target.value)}
           placeholder="Cole o UUID quando o fluxo exigir cliente"
-          sx={{ minWidth: 280 }}
+          sx={{
+            width: { xs: '100%', sm: 260, lg: 340 },
+          }}
         />
         <Tooltip title="Limpar contexto de cliente">
           <span>
@@ -63,9 +71,12 @@ export function ClientSelector({
       select
       size="small"
       label="Cliente"
+      fullWidth
       value={safeValue}
       onChange={(event) => onChange(event.target.value)}
-      sx={{ minWidth: 240 }}
+      sx={{
+        width: { xs: '100%', sm: 240, lg: 280 },
+      }}
     >
       <MenuItem value="">Selecione</MenuItem>
       {availableClientIds.map((clienteId) => (

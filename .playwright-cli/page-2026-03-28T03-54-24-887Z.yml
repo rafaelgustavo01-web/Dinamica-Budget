@@ -1,0 +1,65 @@
+- generic [ref=e2]:
+  - main [ref=e29]:
+    - generic [ref=e31]:
+      - button [ref=e32] [cursor=pointer]:
+        - img [ref=e33]
+      - generic [ref=e37]:
+        - generic [ref=e38]: Construtora Dinâmica
+        - heading "Dashboard" [level=5] [ref=e40]
+        - paragraph [ref=e41]: Selecione um cliente quando o fluxo exigir escopo operacional.
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - generic: Cliente
+            - generic [ref=e45]:
+              - textbox "Cliente" [ref=e46]:
+                - /placeholder: Cole o UUID quando o fluxo exigir cliente
+              - group:
+                - generic: Cliente
+          - generic "Limpar contexto de cliente" [ref=e47]:
+            - button [disabled]:
+              - img
+        - button "Ativar modo escuro" [ref=e48] [cursor=pointer]:
+          - img [ref=e49]
+        - button "Meu perfil" [ref=e51] [cursor=pointer]:
+          - generic [ref=e52]: A
+        - button "Sair" [ref=e53] [cursor=pointer]:
+          - img [ref=e54]
+    - generic [ref=e57]:
+      - generic [ref=e59]:
+        - heading "Dashboard" [level=2] [ref=e60]
+        - paragraph [ref=e61]: Visão resumida do ambiente autenticado, com indicadores úteis para o trabalho diário.
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - paragraph [ref=e64]: Catálogo visível
+          - heading "0" [level=3] [ref=e65]
+          - paragraph [ref=e66]: Total de serviços disponíveis no recorte atual.
+        - generic [ref=e67]:
+          - paragraph [ref=e68]: Pendências de homologação
+          - heading "0" [level=3] [ref=e69]
+          - paragraph [ref=e70]: Disponível para aprovadores e administradores.
+        - generic [ref=e71]:
+          - paragraph [ref=e72]: Clientes vinculados
+          - heading "0" [level=3] [ref=e73]
+          - paragraph [ref=e74]: Perfis carregados a partir do contexto autenticado.
+        - generic [ref=e75]:
+          - paragraph [ref=e76]: Perfil dominante
+          - heading "Administrador" [level=3] [ref=e77]
+          - paragraph [ref=e78]: Definido pelo backend de autenticação.
+      - generic [ref=e79]:
+        - generic [ref=e80]:
+          - heading "Contexto atual" [level=6] [ref=e81]
+          - generic [ref=e82]:
+            - paragraph [ref=e83]: "Usuário: admin (rafael.soares@easymakers.com.br)"
+            - paragraph [ref=e84]: "Cliente ativo: Administrador sem escopo específico"
+            - paragraph [ref=e85]: "Módulos operacionais disponíveis: catálogo, busca inteligente, homologação, composições, associações e governança administrativa."
+        - generic [ref=e86]:
+          - heading "Pendências de integração" [level=6] [ref=e87]
+          - generic [ref=e88]:
+            - paragraph [ref=e89]: Clientes e usuários já possuem fluxos administrativos reais no frontend.
+            - paragraph [ref=e90]: Perfil, relatórios dedicados e um módulo próprio de permissões continuam dependentes de contratos adicionais do backend.
+  - alert [ref=e91]:
+    - img [ref=e93]
+    - generic [ref=e95]: Bem-vindo ao Dinâmica Budget.
+    - button "Close" [ref=e97] [cursor=pointer]:
+      - img [ref=e98]

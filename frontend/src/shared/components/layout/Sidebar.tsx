@@ -184,7 +184,10 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: 'block', lg: 'none' },
-          '& .MuiDrawer-paper': { width: drawerWidth },
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
         }}
       >
         {content}
@@ -195,6 +198,8 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         open
         sx={{
           display: { xs: 'none', lg: 'block' },
+          width: drawerWidth,
+          flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',

@@ -1,0 +1,22 @@
+- generic [ref=e10]:
+  - generic [ref=e11]:
+    - img [ref=e13]
+    - generic [ref=e15]:
+      - heading "Entrar" [level=5] [ref=e16]
+      - paragraph [ref=e17]: Informe seu e-mail e sua senha para acessar o sistema.
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - generic: E-mail
+      - generic [ref=e20]:
+        - textbox "E-mail" [ref=e21]:
+          - /placeholder: nome@empresa.com.br
+        - group:
+          - generic: E-mail
+    - generic [ref=e22]:
+      - generic: Senha
+      - generic [ref=e23]:
+        - textbox "Senha" [ref=e24]:
+          - /placeholder: Digite sua senha
+        - group:
+          - generic: Senha
+    - button "Entrar" [ref=e25] [cursor=pointer]
